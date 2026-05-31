@@ -1,0 +1,186 @@
+/* Legal Content Styling - Professional formatting for Terms, Privacy, and Returns pages */
+
+.legal-content {
+  color: #2D3748;
+  line-height: 1.8;
+}
+
+.legal-content h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2D3748;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #E5E7EB;
+}
+
+.legal-content h2:first-child {
+  margin-top: 0;
+}
+
+.legal-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.legal-content p {
+  margin-bottom: 1rem;
+  color: #4B5563;
+}
+
+.legal-content ul,
+.legal-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #4B5563;
+}
+
+.legal-content ul {
+  list-style-type: disc;
+}
+
+.legal-content ol {
+  list-style-type: decimal;
+}
+
+.legal-content li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.legal-content li ul,
+.legal-content li ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-content strong {
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.legal-content a {
+  color: #E31837;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.legal-content a:hover {
+  color: #C41230;
+}
+
+.legal-content code {
+  background-color: #F3F4F6;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875em;
+}
+
+.legal-content blockquote {
+  border-left: 4px solid #E31837;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: #6B7280;
+  font-style: italic;
+}
+
+/* Quill Editor Customization */
+.ql-toolbar {
+  border: 1px solid #E5E7EB !important;
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+  background: #F9FAFB !important;
+}
+
+.ql-container {
+  border: 1px solid #E5E7EB !important;
+  border-top: none !important;
+  border-radius: 0 0 0.5rem 0.5rem !important;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.ql-editor {
+  min-height: 400px;
+  padding: 1.5rem;
+}
+
+.ql-editor h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2D3748;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #E5E7EB;
+}
+
+.ql-editor h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.ql-editor p {
+  margin-bottom: 1rem;
+  color: #4B5563;
+}
+
+.ql-editor ul,
+.ql-editor ol {
+  padding-left: 1.5rem;
+}
+
+.ql-editor.ql-blank::before {
+  color: #9CA3AF;
+  font-style: normal;
+}
+
+/* Quill toolbar button customization */
+.ql-toolbar button:hover,
+.ql-toolbar button:focus {
+  color: #E31837 !important;
+}
+
+.ql-toolbar button.ql-active {
+  color: #E31837 !important;
+}
+
+.ql-toolbar .ql-stroke {
+  stroke: #6B7280;
+}
+
+.ql-toolbar button:hover .ql-stroke,
+.ql-toolbar button.ql-active .ql-stroke {
+  stroke: #E31837;
+}
+
+.ql-toolbar .ql-fill {
+  fill: #6B7280;
+}
+
+.ql-toolbar button:hover .ql-fill,
+.ql-toolbar button.ql-active .ql-fill {
+  fill: #E31837;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .legal-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .legal-content h3 {
+    font-size: 1.125rem;
+  }
+  
+  .ql-toolbar {
+    padding: 0.5rem;
+  }
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><title>Cache Check</title></head>
+<body>
+<h1>Checking Cache Status</h1>
+<pre id="output">Loading...</pre>
+<script>
+async function checkCache() {
+  const output = document.getElementById('output');
+  
+  // Check homepage-data endpoint
+  const response = await fetch('https://jlsjhczzhcjocewwgjpj.supabase.co/functions/v1/make-server-d1fbc049/homepage-data', {
+    headers: { 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsc2poY3p6aGNqb2Nld3dnanBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc0MDIwNzIsImV4cCI6MjA1Mjk3ODA3Mn0.SiBZ3Y6_PGOKaXLbx7gWOHWDDPVSBbUHN_qgN-rxR8M' }
+  });
+  
+  const data = await response.json();
+  
+  output.textContent = JSON.stringify(data, null, 2);
+  
+  console.log('Categories array:', data.categories);
+  console.log('CategoryTree length:', data.categoryTree?.length);
+  console.log('CategoryTree sample:', data.categoryTree?.slice(0, 3));
+}
+
+checkCache();
+</script>
+</body>
+</html>

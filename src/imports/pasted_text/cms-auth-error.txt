@@ -1,0 +1,56 @@
+==================================================
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 CMSContext.tsx FILE IS BEING EXECUTED
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 ===================================================
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 CMSProvider: Component rendering/mounting
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 [AdminContext] Checking session, token exists: true
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 [AdminContext] Validating token with server...
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 CMSProvider: useEffect triggered, calling loadData()
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 CMSContext: Fetching data from: https://bqtzxoteoucvioxqgfpc.supabase.co/functions/v1/make-server-d1fbc049/cms/data
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 CMSContext: Using projectId: bqtzxoteoucvioxqgfpc
+s3-figma-foundry-cached-previews-production-sig.figma.com/a8c80fc8-f349-4b1a-b4be-e2b729df9e33/index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=Dw5XnBM0K58Qqj0Pb23Lsqc9NaWGatRqKXH-Dzoj-hlPMiV-vHVSRbpSSI8IS~lCXKRncqbjN9PkPQmPAY~Dq8LGZui5YEpnOiOP12YGLOrXlOsc6hMW27dbo6sc5bNnniTtmDnAgb~lljP5r2pRQlW5KFgdKnCXyP7KD5hhWe2-bPsTyHdaQxGg5ByCrdgpCweB70pxBIGRlrxcI3ZCEO9t5jybdXLevXxbqy75nuM1Zr7JbVZkodBjQLyvKZitj0hL6YZuvmLy6aYMK7MctcixjbVT83Kbs-2zeFgvy5oZaG6WDlUro73NDmD75bAhaY33UhOjG02mqBdphEVrvQ__:10504  GET https://bqtzxoteoucvioxqgfpc.supabase.co/functions/v1/make-server-d1fbc049/auth/session 401 (Unauthorized)
+o @ s3-figma-foundry-cached-previews-production-sig.figma.com/a8c80fc8-f349-4b1a-b4be-e2b729df9e33/index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=Dw5XnBM0K58Qqj0Pb23Lsqc9NaWGatRqKXH-Dzoj-hlPMiV-vHVSRbpSSI8IS~lCXKRncqbjN9PkPQmPAY~Dq8LGZui5YEpnOiOP12YGLOrXlOsc6hMW27dbo6sc5bNnniTtmDnAgb~lljP5r2pRQlW5KFgdKnCXyP7KD5hhWe2-bPsTyHdaQxGg5ByCrdgpCweB70pxBIGRlrxcI3ZCEO9t5jybdXLevXxbqy75nuM1Zr7JbVZkodBjQLyvKZitj0hL6YZuvmLy6aYMK7MctcixjbVT83Kbs-2zeFgvy5oZaG6WDlUro73NDmD75bAhaY33UhOjG02mqBdphEVrvQ__:10504
+(anonymous) @ s3-figma-foundry-cached-previews-production-sig.figma.com/a8c80fc8-f349-4b1a-b4be-e2b729df9e33/index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=Dw5XnBM0K58Qqj0Pb23Lsqc9NaWGatRqKXH-Dzoj-hlPMiV-vHVSRbpSSI8IS~lCXKRncqbjN9PkPQmPAY~Dq8LGZui5YEpnOiOP12YGLOrXlOsc6hMW27dbo6sc5bNnniTtmDnAgb~lljP5r2pRQlW5KFgdKnCXyP7KD5hhWe2-bPsTyHdaQxGg5ByCrdgpCweB70pxBIGRlrxcI3ZCEO9t5jybdXLevXxbqy75nuM1Zr7JbVZkodBjQLyvKZitj0hL6YZuvmLy6aYMK7MctcixjbVT83Kbs-2zeFgvy5oZaG6WDlUro73NDmD75bAhaY33UhOjG02mqBdphEVrvQ__:10496
+TN @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+T8 @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+T7 @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+T6 @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+T4 @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+S1 @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+SQ @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+(anonymous) @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+(anonymous) @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:65
+V @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:61
+B @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:61
+eo @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:61
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 [AdminContext] Session check response: 401
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 [AdminContext] Session invalid, removing token
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:17 CMSContext: Error loading CMS data: TypeError: Failed to fetch
+    at o (s3-figma-foundry-cached-previews-production-sig.figma.com/a8c80fc8-f349-4b1a-b4be-e2b729df9e33/index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=Dw5XnBM0K58Qqj0Pb23Lsqc9NaWGatRqKXH-Dzoj-hlPMiV-vHVSRbpSSI8IS~lCXKRncqbjN9PkPQmPAY~Dq8LGZui5YEpnOiOP12YGLOrXlOsc6hMW27dbo6sc5bNnniTtmDnAgb~lljP5r2pRQlW5KFgdKnCXyP7KD5hhWe2-bPsTyHdaQxGg5ByCrdgpCweB70pxBIGRlrxcI3ZCEO9t5jybdXLevXxbqy75nuM1Zr7JbVZkodBjQLyvKZitj0hL6YZuvmLy6aYMK7MctcixjbVT83Kbs-2zeFgvy5oZaG6WDlUro73NDmD75bAhaY33UhOjG02mqBdphEVrvQ__:6052:23)
+    at s3-figma-foundry-cached-previews-production-sig.figma.com/a8c80fc8-f349-4b1a-b4be-e2b729df9e33/index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=Dw5XnBM0K58Qqj0Pb23Lsqc9NaWGatRqKXH-Dzoj-hlPMiV-vHVSRbpSSI8IS~lCXKRncqbjN9PkPQmPAY~Dq8LGZui5YEpnOiOP12YGLOrXlOsc6hMW27dbo6sc5bNnniTtmDnAgb~lljP5r2pRQlW5KFgdKnCXyP7KD5hhWe2-bPsTyHdaQxGg5ByCrdgpCweB70pxBIGRlrxcI3ZCEO9t5jybdXLevXxbqy75nuM1Zr7JbVZkodBjQLyvKZitj0hL6YZuvmLy6aYMK7MctcixjbVT83Kbs-2zeFgvy5oZaG6WDlUro73NDmD75bAhaY33UhOjG02mqBdphEVrvQ__:6046:74
+    at TN (code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37:138396)
+    at T8 (code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37:151856)
+    at T7 (code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37:151634)
+    at T6 (code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37:151542)
+    at T4 (code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37:151420)
+    at S1 (code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37:163585)
+    at SQ (code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37:163247)
+    at code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37:162379
+r @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:17
+error @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90
+o @ s3-figma-foundry-cached-previews-production-sig.figma.com/a8c80fc8-f349-4b1a-b4be-e2b729df9e33/index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=Dw5XnBM0K58Qqj0Pb23Lsqc9NaWGatRqKXH-Dzoj-hlPMiV-vHVSRbpSSI8IS~lCXKRncqbjN9PkPQmPAY~Dq8LGZui5YEpnOiOP12YGLOrXlOsc6hMW27dbo6sc5bNnniTtmDnAgb~lljP5r2pRQlW5KFgdKnCXyP7KD5hhWe2-bPsTyHdaQxGg5ByCrdgpCweB70pxBIGRlrxcI3ZCEO9t5jybdXLevXxbqy75nuM1Zr7JbVZkodBjQLyvKZitj0hL6YZuvmLy6aYMK7MctcixjbVT83Kbs-2zeFgvy5oZaG6WDlUro73NDmD75bAhaY33UhOjG02mqBdphEVrvQ__:6079
+await in o
+(anonymous) @ s3-figma-foundry-cached-previews-production-sig.figma.com/a8c80fc8-f349-4b1a-b4be-e2b729df9e33/index.js?Expires=1775433600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=Dw5XnBM0K58Qqj0Pb23Lsqc9NaWGatRqKXH-Dzoj-hlPMiV-vHVSRbpSSI8IS~lCXKRncqbjN9PkPQmPAY~Dq8LGZui5YEpnOiOP12YGLOrXlOsc6hMW27dbo6sc5bNnniTtmDnAgb~lljP5r2pRQlW5KFgdKnCXyP7KD5hhWe2-bPsTyHdaQxGg5ByCrdgpCweB70pxBIGRlrxcI3ZCEO9t5jybdXLevXxbqy75nuM1Zr7JbVZkodBjQLyvKZitj0hL6YZuvmLy6aYMK7MctcixjbVT83Kbs-2zeFgvy5oZaG6WDlUro73NDmD75bAhaY33UhOjG02mqBdphEVrvQ__:6046
+TN @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+T8 @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+T7 @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+T6 @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+T4 @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+S1 @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+SQ @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+(anonymous) @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:37
+(anonymous) @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:65
+V @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:61
+B @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:61
+eo @ code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:61
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 CMSContext: Using default data due to error
+code_components_preview_iframe-fc89d2cee81f1d72.min.js.br:90 CMSContext: Setting loading to false

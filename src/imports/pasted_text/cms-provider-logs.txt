@@ -1,0 +1,963 @@
+[vite] connecting...
+[vite] connected.
+===================================================
+CMSContext.tsx v2 - FILE IS BEING EXECUTED
+===================================================
+[BOGO] Module loaded - clearing cache
+🔧 CMSProvider: Component rendering/mounting
+⚠️  CMSProvider: No valid cache found, using defaults and will load from server
+✅ CMSProvider: No cache found, showing loading skeleton
+✅ Favicon injected via inline SVG data URL
+ℹ️ [INFO] Header: Checking customer data from localStorage... 
+ℹ️ [INFO] Header: Raw localStorage data: 
+ℹ️ [INFO] Header: No customer data found in localStorage 
+ℹ️ [INFO] Header: Event listeners attached 
+ℹ️ [INFO] Header: Customer state updated: 
+🔄 Fetching homepage data from server...
+🔍 [DEBUG] AdminContext initial load {
+  "hasToken": false
+}
+⚡ CMSProvider: useEffect triggered - Starting progressive load
+⚡ STEP 1: Loading lightweight homepage data...
+📡 Response status: 200 
+✅ STEP 1 COMPLETE: Homepage data loaded in 4821ms
+📦 Homepage data: 20 featured, 20 popular, 20 categories
+[Cache] Data cached successfully
+✅ Cached homepage data (3 banners, 20 categories)
+⚡ STEP 2: Loading full data in background...
+✅ Homepage data loaded successfully!
+🔧 CMSProvider: Component rendering/mounting
+[Badge Debug] Polar C-Series Upright White F - Code: PC005-A, Brand: Polar
+[BOGO Badge START] Code: PC005-A, Brand: Polar, Category: 12590
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Polar Ice Machine 50 kg Output - Code: GK032-A, Brand: Polar
+[BOGO Badge START] Code: GK032-A, Brand: Polar, Category: 5513
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Polar G-Series Upright Display - Code: GE580-A, Brand: Polar
+[BOGO Badge START] Code: GE580-A, Brand: Polar, Category: 14042
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Polar U-Series Deli Display Fr - Code: DB959-A, Brand: Polar
+[BOGO Badge START] Code: DB959-A, Brand: Polar, Category: 14042
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Polar G-Series Countertop Milk - Code: DB109-A, Brand: Polar
+[BOGO Badge START] Code: DB109-A, Brand: Polar, Category: 14042
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Polar C-Series Energy Efficien - Code: CX578-A, Brand: Polar
+[BOGO Badge START] Code: CX578-A, Brand: Polar, Category: 14042
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Polar G-Series Double Door Cou - Code: U636-A, Brand: Polar
+[BOGO Badge START] Code: U636-A, Brand: Polar, Category: 12598
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Polar G-Series 2 Door Upright  - Code: DL898-A, Brand: Polar
+[BOGO Badge START] Code: DL898-A, Brand: Polar, Category: 12590
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Apuro Premium Commercial Rice  - Code: J300-A, Brand: Apuro
+[BOGO Badge START] Code: J300-A, Brand: Apuro, Category: cat-1772849065450-s2avvs5rw
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Apuro Medium Duty Programmable - Code: FB864-A, Brand: Apuro
+[BOGO Badge START] Code: FB864-A, Brand: Apuro, Category: cat-1772848311728-rkgxduwyi
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Apuro Double Contact Grill Fla - Code: CU610-A, Brand: Apuro
+[BOGO Badge START] Code: CU610-A, Brand: Apuro, Category: cat-1772848614518-3afsc68dv
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Apuro Premium Large Rice Cooke - Code: CK698-A, Brand: Apuro
+[BOGO Badge START] Code: CK698-A, Brand: Apuro, Category: cat-1772849065450-s2avvs5rw
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Apuro Heavy Duty Induction Hob - Code: CP799-A, Brand: Apuro
+[BOGO Badge START] Code: CP799-A, Brand: Apuro, Category: cat-1772848982685-eead085pb
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Apuro 4 Zone Induction Hob 2 x - Code: CU558-A, Brand: Apuro
+[BOGO Badge START] Code: CU558-A, Brand: Apuro, Category: cat-1772848982685-eead085pb
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Apuro Energy Saving Manual Fil - Code: CX879-A, Brand: Apuro
+[BOGO Badge START] Code: CX879-A, Brand: Apuro, Category: 4044
+[BOGO] Fetching fresh specials from API...
+[Badge Debug] Apuro Twin Tank Electric Fryer - Code: CU621-A, Brand: Apuro
+[BOGO Badge START] Code: CU621-A, Brand: Apuro, Category: cat-1772848001016-et5iuk07w
+[BOGO] Fetching fresh specials from API...
+📦 Background: Loading full dataset...
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Match] Brand "Apuro" not in targetIds: [
+  "Polar"
+]
+[BOGO Badge] Found 0 specials for this product
+[BOGO Badge] No specials found - returning null
+[Badge Result] CK698-A: null
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Match] Brand "Apuro" not in targetIds: [
+  "Polar"
+]
+[BOGO Badge] Found 0 specials for this product
+[BOGO Badge] No specials found - returning null
+[Badge Result] CP799-A: null
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[Badge Result] PC005-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Match] Brand "Apuro" not in targetIds: [
+  "Polar"
+]
+[BOGO Badge] Found 0 specials for this product
+[BOGO Badge] No specials found - returning null
+[Badge Result] FB864-A: null
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[Badge Result] U636-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[Badge Result] GE580-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Match] Brand "Apuro" not in targetIds: [
+  "Polar"
+]
+[BOGO Badge] Found 0 specials for this product
+[BOGO Badge] No specials found - returning null
+[Badge Result] CU621-A: null
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Match] Brand "Apuro" not in targetIds: [
+  "Polar"
+]
+[BOGO Badge] Found 0 specials for this product
+[BOGO Badge] No specials found - returning null
+[Badge Result] J300-A: null
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[Badge Result] GK032-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[Badge Result] CX578-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Match] Brand "Apuro" not in targetIds: [
+  "Polar"
+]
+[BOGO Badge] Found 0 specials for this product
+[BOGO Badge] No specials found - returning null
+[Badge Result] CX879-A: null
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[Badge Result] DB959-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[Badge Result] DB109-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Match] Brand "Apuro" not in targetIds: [
+  "Polar"
+]
+[BOGO Badge] Found 0 specials for this product
+[BOGO Badge] No specials found - returning null
+[Badge Result] CU558-A: null
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Match] Brand "Apuro" not in targetIds: [
+  "Polar"
+]
+[BOGO Badge] Found 0 specials for this product
+[BOGO Badge] No specials found - returning null
+[Badge Result] CU610-A: null
+[BOGO] API Response: {
+  "success": true,
+  "specials": [
+    {
+      "id": "special-1775979686452-91iv12541",
+      "name": "bbbb",
+      "type": "bogo",
+      "badge": "BUY1 GET 1 for half price",
+      "active": true,
+      "applyTo": "brand",
+      "endDate": "2026-04-30T00:00:00.000Z",
+      "priority": 1,
+      "createdAt": "2026-04-12T07:41:26.452Z",
+      "createdBy": "admin",
+      "startDate": "2026-04-12T00:00:00.000Z",
+      "targetIds": [
+        "Polar"
+      ],
+      "updatedAt": "2026-04-12T07:54:02.586Z",
+      "badgeColor": "#E31837",
+      "bogoConfig": {
+        "buyQuantity": 1,
+        "getQuantity": 1,
+        "discountType": "percentage",
+        "allowMixMatch": true,
+        "allowSameItem": true,
+        "applyToLowest": true,
+        "discountValue": 50
+      },
+      "showOnProductCard": true,
+      "stackWithMultibuy": false,
+      "stackWithCustomerDiscount": true
+    }
+  ]
+}
+[BOGO] ✅ Cached 1 active specials
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[Badge Result] DL898-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+🔧 CMSProvider: Component rendering/mounting
+✅ Favicon injected via inline SVG data URL
+[Badge Debug] Polar G-Series Upright Display - Code: GE580-A, Brand: Polar
+[BOGO Badge START] Code: GE580-A, Brand: Polar, Category: 14042
+[BOGO] Using cached specials (23s old, 1 specials)
+[Badge Debug] Polar U-Series Deli Display Fr - Code: DB959-A, Brand: Polar
+[BOGO Badge START] Code: DB959-A, Brand: Polar, Category: 14042
+[BOGO] Using cached specials (23s old, 1 specials)
+[Badge Debug] Polar G-Series Countertop Milk - Code: DB109-A, Brand: Polar
+[BOGO Badge START] Code: DB109-A, Brand: Polar, Category: 14042
+[BOGO] Using cached specials (23s old, 1 specials)
+[Badge Debug] Polar C-Series Energy Efficien - Code: CX578-A, Brand: Polar
+[BOGO Badge START] Code: CX578-A, Brand: Polar, Category: 14042
+[BOGO] Using cached specials (23s old, 1 specials)
+[BOGO Badge START] Code: GK032-A, Brand: Polar, Category: 5513
+[BOGO] Using cached specials (23s old, 1 specials)
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[BOGO Badge] Found 1 specials for this product
+[BOGO Badge] Special details: [
+  {
+    "name": "bbbb",
+    "badge": "BUY1 GET 1 for half price",
+    "badgeColor": "#E31837",
+    "showOnProductCard": true,
+    "applyTo": "brand",
+    "targetIds": [
+      "Polar"
+    ]
+  }
+]
+[BOGO Badge RESULT] ✅ Returning: "BUY1 GET 1 for half price" (#E31837)
+[Badge Result] GE580-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+[Badge Result] DB959-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+[Badge Result] DB109-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+[Badge Result] CX578-A: {
+  "text": "BUY1 GET 1 for half price",
+  "color": "#E31837"
+}
+🔧 CMSProvider: Component rendering/mounting
+❌ ReferenceError: Tag is not defined
+    at Header (https://app-gqrnc5ia2wv6nk2gchhaqfmk2gxpj34h63aszj37sem2af6bh5hd.makeproxy-c.figma.site/src/app/components/Header.tsx:1484:51)
+    at ms (https://www.figma.com/webpack-artifacts/assets/code_components_preview_iframe-f057e30e74e62cfa.min.js.br:37:68027)
+    at _c (https://www.figma.com/webpack-artifacts/assets/code_components_preview_iframe-f057e30e74e62cfa.min.js.br:37:110700)
+    at _4 (https://www.figma.com/webpack-artifacts/assets/code_components_preview_iframe-f057e30e74e62cfa.min.js.br:37:127859)
+    at HTMLUnknownElement.y (https://www.figma.com/webpack-artifacts/assets/code_components_preview_iframe-f057e30e74e62cfa.min.js.br:25:54006)
+    at Object.ik (https://www.figma.com/webpack-artifacts/assets/code_components_preview_iframe-f057e30e74e62cfa.min.js.br:25:54331)
+    at iz (https://www.figma.com/webpack-artifacts/assets/code_components_preview_iframe-f057e30e74e62cfa.min.js.br:25:55284)
+    at ep (https://www.figma.com/webpack-artifacts/assets/code_components_preview_iframe-f057e30e74e62cfa.min.js.br:37:166948)
+    at SX (https://www.figma.com/webpack-artifacts/assets/code_components_preview_iframe-f057e30e74e62cfa.min.js.br:37:160942)
+    at S$ (https://www.figma.com/webpack-artifacts/assets/code_components_preview_iframe-f057e30e74e62cfa.min.js.br:37:160557)
+2
+❌ Error handled by React Router default ErrorBoundary: ReferenceError: Tag is not defined
+❌ React Router caught the following error during render ReferenceError: Tag is not defined

@@ -1,0 +1,381 @@
+ } ],
+   "pageTitle" : "Polar C-Series Upright Freezer 600Ltr - CD085-A - Uropa",
+   "pageType" : "PRODUCT",
+   "pdpUrl" : "https://p1-api.nisbets.com.au/occ/v2/uropa-au/orgUsers/current/products/details/cd085-a",
+   "product" : {
+      "ageRestricted" : false,
+      "approved" : true,
+      "attributes" : [ {
+         "fieldCode" : "COMP CAPACITY",
+         "fieldName" : "Capacity",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_capacity",
+         "isFeature" : true,
+         "value" : "600Ltr"
+      }, {
+         "fieldCode" : "COMP DIMENSIONS",
+         "fieldName" : "Dimensions",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_dimensions",
+         "isFeature" : true,
+         "value" : "1890(H) x 780(W) x 695(D)mm"
+      }, {
+         "fieldCode" : "COMP DIMENSIONS INT",
+         "fieldName" : "Dimensions - internal",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_dimensions_int",
+         "isFeature" : true,
+         "value" : "1680(H) x 657(W) x 581(D)mm"
+      }, {
+         "fieldCode" : "COMP INSULATION",
+         "fieldName" : "Dimensions - insulation",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_insulation",
+         "isFeature" : true,
+         "value" : "60mm"
+      }, {
+         "fieldCode" : "COMP MATERIAL EXT",
+         "fieldName" : "Finish - external",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_material_ext",
+         "isFeature" : true,
+         "value" : "Stainless steel"
+      }, {
+         "fieldCode" : "COMP POWER",
+         "fieldName" : "Power Type",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_power",
+         "isFeature" : true,
+         "value" : "3.5A"
+      }, {
+         "fieldCode" : "COMP REFRIGERANT",
+         "fieldName" : "Refrigerant",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_refrigerant",
+         "isFeature" : true,
+         "value" : "R600a / GWP 3"
+      }, {
+         "fieldCode" : "COMP TEMP RANGE",
+         "fieldName" : "Temperature Range",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_temp_range",
+         "isFeature" : true,
+         "value" : "-25°C to -10°C"
+      }, {
+         "fieldCode" : "COMP VOLTAGE",
+         "fieldName" : "Voltage",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_voltage",
+         "isFeature" : true,
+         "value" : "230V"
+      }, {
+         "fieldCode" : "COMP WEIGHT",
+         "fieldName" : "Weight",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_weight",
+         "isFeature" : true,
+         "value" : "95kg"
+      }, {
+         "fieldCode" : "COMP DIMS PACKED",
+         "fieldName" : "Dimensions - Packed",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_dims_packed",
+         "isFeature" : true,
+         "value" : "2100(H) x 840(W) x 760(D) mm"
+      }, {
+         "fieldCode" : "COMP WEIGHTPACKED",
+         "fieldName" : "Weight - Packed",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_weightpacked",
+         "isFeature" : true,
+         "value" : "101 kg"
+      }, {
+         "fieldCode" : "COMP WARRANTY RBD",
+         "fieldName" : "Warranty",
+         "fieldType" : "COMPARISONDATA",
+         "id" : "comp_warranty_rbd",
+         "isFeature" : true,
+         "value" : "2 Years On-Site Parts & Labour"
+      }, {
+         "fieldCode" : "COMP CLEARANCECAT",
+         "fieldName" : "Clearance Category",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_clearancecat",
+         "value" : "Refrigeration"
+      }, {
+         "fieldCode" : "COMP FRIDGECAPACITY",
+         "fieldName" : "Refrigeration Capacity",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_fridgecapacity",
+         "value" : "600"
+      }, {
+         "fieldCode" : "COMP FRIDGEDOORNUM",
+         "fieldName" : "Number of Doors",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_fridgedoornum",
+         "value" : "1"
+      }, {
+         "fieldCode" : "COMP FRIDGEDOORTYPE",
+         "fieldName" : "Door Type",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_fridgedoortype",
+         "value" : "Hinged"
+      }, {
+         "fieldCode" : "COMP FRIDGEFINISH",
+         "fieldName" : "Refrigeration Finish",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_fridgefinish",
+         "value" : "Stainless Steel"
+      }, {
+         "fieldCode" : "COMP FRIDGEFUNCTION",
+         "fieldName" : "Refrigeration Function",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_fridgefunction",
+         "value" : "Freezer"
+      }, {
+         "fieldCode" : "COMP FUELTYPE",
+         "fieldName" : "Fuel Type",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_fueltype",
+         "value" : "Plug"
+      }, {
+         "fieldCode" : "COMP COLOUR",
+         "fieldName" : "By Colour",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_colour",
+         "value" : "Silver"
+      }, {
+         "fieldCode" : "COMP GNSIZE",
+         "fieldName" : "By GN Size",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_gnsize",
+         "value" : "2/1 GN double"
+      }, {
+         "fieldCode" : "COMP PRODCAPACITY",
+         "fieldName" : "Capacity in litres",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_prodcapacity",
+         "value" : "600"
+      }, {
+         "fieldCode" : "COMP FEATURED",
+         "fieldName" : "Featured Product",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_featured",
+         "value" : "Special Offers"
+      }, {
+         "fieldCode" : "COMP HEIGHT",
+         "fieldName" : "Height",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_height",
+         "value" : "1890"
+      }, {
+         "fieldCode" : "COMP TYPE",
+         "fieldName" : "Type",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_type",
+         "value" : "Upright Freezers"
+      }, {
+         "fieldCode" : "COMP WIDTH",
+         "fieldName" : "Width",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_width",
+         "value" : "780"
+      }, {
+         "fieldCode" : "COMP TROPICAL REFRIG",
+         "fieldName" : "Tropical Refrigeration",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_tropical_refrig",
+         "value" : "Yes"
+      }, {
+         "fieldCode" : "COMP COOLING",
+         "fieldName" : "Cooling",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_cooling",
+         "value" : "Static"
+      }, {
+         "fieldCode" : "COMP LIGHTSOURCE",
+         "fieldName" : "Light Source",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_lightsource",
+         "value" : "LED"
+      }, {
+         "fieldCode" : "COMP NUMBEROFSHELVES",
+         "fieldName" : "Number of Shelves",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_numberofshelves",
+         "value" : "6"
+      }, {
+         "fieldCode" : "COMP REVIEW COUNT",
+         "fieldName" : "Number of Reviews",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_review_count",
+         "value" : "7"
+      }, {
+         "fieldCode" : "COMP RANGE",
+         "fieldName" : "Range",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_range",
+         "value" : "C Series"
+      }, {
+         "fieldCode" : "BRAND RANKING",
+         "fieldName" : "Brand Ranking",
+         "fieldType" : "FACETDATA",
+         "id" : "brand_ranking",
+         "value" : "1000"
+      }, {
+         "fieldCode" : "FCT TEMP RANGE",
+         "fieldName" : "Temperature Range",
+         "fieldType" : "FACETDATA",
+         "id" : "fct_temp_range",
+         "value" : "-25 °C to -10 °C"
+      }, {
+         "fieldCode" : "COMP WATTAGE",
+         "fieldName" : "Wattage",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_wattage",
+         "value" : "350W"
+      }, {
+         "fieldCode" : "COMP DEPTH",
+         "fieldName" : "Depth",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_depth",
+         "value" : "695"
+      }, {
+         "fieldCode" : "COMP FEET",
+         "fieldName" : "Feet",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_feet",
+         "value" : "Adjustable Feet, Castors"
+      }, {
+         "fieldCode" : "COMP ENERGYRATING",
+         "fieldName" : "Energy Rating",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_energyrating",
+         "value" : "B"
+      }, {
+         "fieldCode" : "COMP MOBILITY",
+         "fieldName" : "Mobility",
+         "fieldType" : "FACETDATA",
+         "id" : "comp_mobility",
+         "value" : "Feet"
+      }, {
+         "fieldCode" : "DATA 1",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_1",
+         "isFeature" : true,
+         "value" : "Six sturdy fixed shelves maximise storage efficiency"
+      }, {
+         "fieldCode" : "DATA 2",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_2",
+         "isFeature" : true,
+         "value" : "Accurate, user-friendly digital temperature controls and display"
+      }, {
+         "fieldCode" : "DATA 3",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_3",
+         "isFeature" : true,
+         "value" : "Fixed rear castors enable easy positioning for simpler cleaning and installation"
+      }, {
+         "fieldCode" : "DATA 4",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_4",
+         "isFeature" : true,
+         "value" : "Simple manual defrost function - choose when to defrost to keep fridge performing at its best"
+      }, {
+         "fieldCode" : "DATA 5",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_5",
+         "isFeature" : true,
+         "value" : "LED digital temperature display and electronic controller for easy operation"
+      }, {
+         "fieldCode" : "DATA 6",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_6",
+         "isFeature" : true,
+         "value" : "60mm insulation improves efficiency to further reduce running costs"
+      }, {
+         "fieldCode" : "DATA 7",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_7",
+         "isFeature" : true,
+         "value" : "Lockable, reversible door improves security and allows for easy access in cramped spaces"
+      }, {
+         "fieldCode" : "DATA 8",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_8",
+         "isFeature" : true,
+         "value" : "Net Usable Capacity: 469 Ltr"
+      }, {
+         "fieldCode" : "DATA 9",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_9",
+         "isFeature" : true,
+         "value" : "Ambient temperature range: 10°C to 32°C"
+      }, {
+         "fieldCode" : "DATA 10",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_10",
+         "isFeature" : true,
+         "value" : "60mm insulation reduces running costs, improves energy efficiency and boosts performance"
+      }, {
+         "fieldCode" : "DATA 11",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_11",
+         "isFeature" : true,
+         "value" : "Not suitable for use in outdoor & mobile environments including catering vehicles."
+      }, {
+         "fieldCode" : "DATA 12",
+         "fieldType" : "ATTRIBUTESDATA",
+         "id" : "data_12",
+         "isFeature" : true,
+         "value" : "Time-saving, easy-clean stainless steel construction"
+      }, {
+         "fieldCode" : "PLUG_AU",
+         "fieldName" : "Plug fitted",
+         "fieldType" : "HAZARDDATA",
+         "id" : "plug_au",
+         "value" : "1x 10amp Plug"
+      }, {
+         "fieldCode" : "LARGEITEM",
+         "fieldName" : "Large Item",
+         "fieldType" : "HAZARDDATA",
+         "id" : "largeitem",
+         "value" : "Y"
+      } ],
+      "availabilityMessage" : {
+         "alternativesShown" : false,
+         "buyButtonShown" : true,
+         "imageURL" : "https://media.nisbets.com/images/availability/en/inStock.png",
+         "message" : "In Stock",
+         "messageEnum" : "AM_IN_STOCK"
+      },
+      "backOrder" : "ALLOWED",
+      "baseOptions" : [ ],
+      "boxQuantity" : "",
+      "brand" : "/polar/_/a33-1",
+      "brandLogo" : {
+         "altText" : "Polar",
+         "format" : "category-image",
+         "url" : "https://media.nisbets.com/asset/en/brand/large/polar.jpg"
+      },
+      "categories" : [ {
+         "code" : "Polar",
+         "isBrand" : true,
+         "name" : "Polar",
+         "url" : "/polar/_/a33-1"
+      }, {
+         "code" : "12635",
+         "isBrand" : false,
+         "name" : "Upright Freezers",
+         "url" : "/refrigeration-and-ice-machines/freezers/upright-freezers/_/a33-3"
+      }, {
+         "code" : "14697",
+         "isBrand" : false,
+         "name" : "Star Buys",
+         "url" : "/clearance-and-special-offers/star-buys/_/a33-2"
+      } ],
+      "code" : "CD085-A",
+      "configurable" : false,
+      "customVariableX" : "78.22",
+      "description" : "Designed to reliably keep large quantities of foods perfectly frozen, the Polar C-Series freezer is an excellent choice for less demanding professional kitchens. With an impressive 469 litres of usable space, there's plenty of room over the six fixed shelves for all your ingredients - allowing you to maximise the frozen storage capacity of your kitchen.<br/><br/>The freezer is easily controlled by a precise digital thermostat, which also displays a constant readout of the internal temperature, so you'll always be able to check the temperature at a glance without opening the unit. The sturdy door is lockable and features a removable seal, adding to the overall security, hygiene and reliability of the freezer. And thanks to the stainless steel construction, the freezer is easy to clean when required.<br/><br/>Polar C-Series kitchen refrigeration is designed for everyday commercial use in less demanding environments. Choose C-Series for general storage when you don't plan to access the unit often. The C-series range works in conditions up to 32°C. Suitable for perishable & non-perishable food items<br/><br/>Please Note: Not suitable for use in outdoor & mobile environments including catering vehicles. Due to the size of this item, an additional delivery charge may apply - please check our delivery page for more information.",

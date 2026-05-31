@@ -1,0 +1,802 @@
+create table public.kv_store_577b3f26 (
+  key text not null,
+  value jsonb not null,
+  created_at timestamp with time zone null default now(),
+  updated_at timestamp with time zone null default now(),
+  constraint kv_store_577b3f26_pkey primary key (key)
+) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_key_prefix on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx1 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx2 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx3 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx4 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx5 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx6 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx7 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx8 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx9 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx10 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx11 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx12 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx13 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx14 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx15 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx16 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx17 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx18 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx19 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx20 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx21 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx22 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx23 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx24 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx25 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx26 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx27 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx28 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx29 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx30 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx31 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx32 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx33 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx34 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx35 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx36 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx37 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx38 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx39 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx40 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx41 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx42 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx43 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx44 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx45 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx46 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx47 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx48 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx49 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx50 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx51 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx52 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx53 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx54 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx55 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx56 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx57 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx58 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx59 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx60 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx61 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx62 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx63 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx64 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx65 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx66 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx67 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx68 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx69 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx70 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx71 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx72 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx73 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx74 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx75 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx76 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx77 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx78 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx79 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx80 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx81 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx82 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx83 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx84 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx85 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx86 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx87 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx88 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx89 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx90 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx91 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx92 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx93 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx94 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx95 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx96 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx97 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx98 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx99 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx100 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx101 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx102 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx103 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx104 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx105 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx106 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx107 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx108 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx109 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx110 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx111 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx112 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx113 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx114 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx115 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx116 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx117 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_key_pattern on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_value_gin on public.kv_store_577b3f26 using gin (value jsonb_path_ops) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_category_id on public.kv_store_577b3f26 using btree (((value ->> 'category_id'::text))) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_category_level1_id on public.kv_store_577b3f26 using btree (((value ->> 'category_level1_id'::text))) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_brand on public.kv_store_577b3f26 using btree (((value ->> 'brand'::text))) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_code on public.kv_store_577b3f26 using btree (((value ->> 'code'::text))) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx157 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx158 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx159 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx160 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx161 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_products_category on public.kv_store_577b3f26 using btree (
+  key text_pattern_ops,
+  ((value ->> 'category_level1_id'::text))
+) TABLESPACE pg_default
+where
+  (key ~~ 'products:%'::text);
+
+create index IF not exists kv_store_577b3f26_key_idx118 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx119 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx120 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx121 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx122 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx123 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx124 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx125 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx126 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx127 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx128 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx129 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx130 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx131 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx132 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx133 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx134 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx135 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx136 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx137 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx138 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx139 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx140 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx141 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx142 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx143 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx144 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx145 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx146 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx147 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx148 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx149 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx150 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx151 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx152 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx153 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx154 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx155 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx156 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx162 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx163 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx164 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx165 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx166 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx167 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx168 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx169 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx170 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx171 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx172 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx173 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx174 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx175 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx176 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx177 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx178 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx179 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx180 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx181 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx182 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx183 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx184 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx185 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx186 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx187 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx188 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx189 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx190 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx191 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx192 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx202 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx203 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx204 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_parent_id on public.kv_store_577b3f26 using btree (((value ->> 'parentId'::text))) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_level on public.kv_store_577b3f26 using btree (((value ->> 'level'::text))) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_slug on public.kv_store_577b3f26 using btree (((value ->> 'slug'::text))) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_brand_lower on public.kv_store_577b3f26 using btree (lower((value ->> 'brand'::text))) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_sku on public.kv_store_577b3f26 using btree (((value ->> 'sku'::text))) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_price on public.kv_store_577b3f26 using btree ((((value ->> 'price'::text))::numeric)) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_sale_price on public.kv_store_577b3f26 using btree ((((value ->> 'salePrice'::text))::numeric)) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_in_stock on public.kv_store_577b3f26 using btree ((((value ->> 'inStock'::text))::boolean)) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_name_trgm on public.kv_store_577b3f26 using gin (((value ->> 'name'::text)) gin_trgm_ops) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_products_brand on public.kv_store_577b3f26 using btree (key text_pattern_ops, ((value ->> 'brand'::text))) TABLESPACE pg_default
+where
+  (key ~~ 'products:%'::text);
+
+create index IF not exists idx_kv_store_categories on public.kv_store_577b3f26 using btree (
+  key text_pattern_ops,
+  ((value ->> 'level'::text)),
+  ((value ->> 'parentId'::text))
+) TABLESPACE pg_default
+where
+  (key ~~ 'categories:%'::text);
+
+create index IF not exists idx_kv_store_promotion_id on public.kv_store_577b3f26 using btree (((value ->> 'promotionId'::text))) TABLESPACE pg_default;
+
+create index IF not exists idx_kv_store_order_status on public.kv_store_577b3f26 using btree (((value ->> 'status'::text))) TABLESPACE pg_default
+where
+  (key ~~ 'orders:%'::text);
+
+create index IF not exists idx_kv_store_order_date on public.kv_store_577b3f26 using btree (((value ->> 'createdAt'::text))) TABLESPACE pg_default
+where
+  (key ~~ 'orders:%'::text);
+
+create index IF not exists kv_store_577b3f26_key_idx193 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx194 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx195 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx196 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx197 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx198 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx199 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx200 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx201 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx205 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx206 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx207 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx208 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx209 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx210 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx211 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx212 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx213 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx214 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx215 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx216 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx217 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx218 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx219 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx220 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx221 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx222 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx223 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx224 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx225 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx226 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx227 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx228 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx229 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx230 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx231 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx232 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx233 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx234 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx235 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx236 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx237 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx238 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx239 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx240 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx241 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx242 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx243 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx244 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx245 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx246 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx247 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx248 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx249 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx250 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx251 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx252 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx253 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx254 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx255 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx256 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx257 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx258 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx259 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx260 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx261 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx262 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx263 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx264 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx265 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx266 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx267 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx268 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx269 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx270 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx271 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx272 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx273 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx274 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx275 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx276 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx277 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx278 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx279 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx280 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx281 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx282 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx283 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx284 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx285 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx286 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx287 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx288 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx289 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx290 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx291 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx292 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx293 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx294 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx295 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx296 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx297 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx298 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx299 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx300 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx301 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx302 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx303 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx304 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx305 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx306 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx307 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx308 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx309 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx310 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx311 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx312 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx313 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx314 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx315 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx316 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx317 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx318 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx319 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx320 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx321 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx322 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx323 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx324 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx325 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx326 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx327 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx328 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx329 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx330 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx331 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx332 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx333 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx334 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx335 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx336 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx337 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx338 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx339 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx340 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx341 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx342 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx343 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx344 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx345 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx346 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx347 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx348 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx349 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx350 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx351 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx352 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx353 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx354 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx355 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx356 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx357 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx358 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx359 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx360 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx361 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx362 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx363 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx364 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx365 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;
+
+create index IF not exists kv_store_577b3f26_key_idx366 on public.kv_store_577b3f26 using btree (key text_pattern_ops) TABLESPACE pg_default;

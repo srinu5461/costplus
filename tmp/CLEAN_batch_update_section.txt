@@ -1,0 +1,8 @@
+          // 🔥 UPDATE: Just update the 3 target fields, keep everything else
+          const updatedProduct = {
+            ...product, // Keep ALL existing fields
+            description: uropaDescription || product.description,
+            specifications: specifications.length > 0 ? specifications : product.specifications,
+            ageRestricted: uropaAgeRestricted, // ✅ Always boolean (true/false)
+            lastDescriptionSync: new Date().toISOString(),
+          };

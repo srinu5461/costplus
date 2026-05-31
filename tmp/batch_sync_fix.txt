@@ -1,0 +1,26 @@
+          // 🔥 USE SHARED FUNCTION - guarantees same logic as /compare endpoint!
+          let uropaData;
+          try {
+            uropaData = await fetchProductFromUropa(productCode, token, 5000);
+          } catch (error) {
+            results.push({
+              productCode,
+              productName: product.name,
+              error: String(error),
+            });
+            errors++;
+            return;
+          }
+          
+          // 🔥 Extract data from shared function (guarantees same logic as /compare!)
+          const uropaDescription = uropaData.description;
+          const specifications = uropaData.specifications;
+          const uropaAgeRestricted = uropaData.ageRestricted;
+          
+          // 🔍 DEBUG: Log what we extracted
+          console.log(`🔍 [Batch Sync] ${productCode} - Extracted Data:`, {
+            descriptionLength: uropaDescription.length,
+            specificationsCount: specifications.length,
+            ageRestricted: uropaAgeRestricted,
+            allSpecifications: specifications,
+          });

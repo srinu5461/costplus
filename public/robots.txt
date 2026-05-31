@@ -1,0 +1,14 @@
+# Costplus100 Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /customer/login
+Disallow: /customer/dashboard
+Disallow: /checkout
+Disallow: /cart
+
+# Sitemaps
+Sitemap: https://costplus100.com.au/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

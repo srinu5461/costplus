@@ -1,0 +1,35 @@
+{
+  "name": "CostPlus Catering Equipment",
+  "short_name": "CostPlus",
+  "description": "Australia's trusted supplier for commercial kitchen equipment, food service supplies, and hospitality solutions.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#E31837",
+  "theme_color": "#E31837",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "apple-touch-icon"
+    }
+  ]
+}

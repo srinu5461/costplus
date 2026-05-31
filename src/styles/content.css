@@ -1,0 +1,244 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * CONTENT STYLING - Production-ready HTML content formatting
+ * ═══════════════════════════════════════════════════════════════
+ * 
+ * Controls spacing and formatting for user-generated HTML content
+ * like product descriptions and specifications from CMS/API
+ */
+
+/* Normalize spacing in prose content */
+.prose-normalize {
+  /* Paragraph spacing */
+  & p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+
+  & p:first-child {
+    margin-top: 0;
+  }
+
+  & p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* List spacing */
+  & ul, & ol {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+  }
+
+  & li {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    line-height: 1.5;
+  }
+
+  & li > p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* Heading spacing */
+  & h1, & h2, & h3, & h4, & h5, & h6 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  & h1:first-child,
+  & h2:first-child,
+  & h3:first-child,
+  & h4:first-child,
+  & h5:first-child,
+  & h6:first-child {
+    margin-top: 0;
+  }
+
+  /* Line break normalization */
+  & br {
+    content: '';
+    display: block;
+    margin: 0.25rem 0;
+  }
+
+  /* Strong/bold */
+  & strong, & b {
+    font-weight: 600;
+  }
+
+  /* Emphasis/italic */
+  & em, & i {
+    font-style: italic;
+  }
+
+  /* Remove excessive spacing */
+  & > *:first-child {
+    margin-top: 0 !important;
+  }
+
+  & > *:last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+/* Inline content - for specification values */
+.content-inline {
+  & p {
+    display: inline;
+    margin: 0;
+  }
+
+  & br {
+    display: none;
+  }
+
+  & > * {
+    display: inline;
+    margin: 0;
+  }
+
+  & ul, & ol {
+    display: inline;
+    list-style: none;
+    padding: 0;
+  }
+
+  & li {
+    display: inline;
+    margin: 0;
+  }
+
+  & li:not(:last-child)::after {
+    content: ', ';
+  }
+}
+
+/* Compact content - minimal spacing */
+.content-compact {
+  & p {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  & ul, & ol {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  & li {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  & br {
+    display: none;
+  }
+
+  & h1, & h2, & h3, & h4, & h5, & h6 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* Quill editor content styling - for About page and other rich text content */
+.quill-content {
+  /* Headings */
+  & h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 2.5rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #1e293b;
+  }
+
+  & h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 2.25rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #1e293b;
+  }
+
+  & h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #334155;
+  }
+
+  /* Paragraphs */
+  & p {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    margin-bottom: 1rem;
+    color: #475569;
+  }
+
+  /* Lists */
+  & ul, & ol {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  & ul {
+    list-style-type: disc;
+  }
+
+  & ol {
+    list-style-type: decimal;
+  }
+
+  & li {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    margin-bottom: 0.5rem;
+    color: #475569;
+  }
+
+  /* Strong/Bold */
+  & strong {
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  /* Links */
+  & a {
+    color: #E31837;
+    text-decoration: none;
+  }
+
+  & a:hover {
+    text-decoration: underline;
+  }
+
+  /* Quill alignment classes */
+  & .ql-align-center {
+    text-align: center;
+  }
+
+  & .ql-align-right {
+    text-align: right;
+  }
+
+  & .ql-align-justify {
+    text-align: justify;
+  }
+
+  /* Remove extra spacing from first/last elements */
+  & > *:first-child {
+    margin-top: 0 !important;
+  }
+
+  & > *:last-child {
+    margin-bottom: 0 !important;
+  }
+}
