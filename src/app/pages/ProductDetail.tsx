@@ -730,13 +730,13 @@ export function ProductDetail() {
     actualSellingPrice = sizePrice !== null ? sizePrice : specialDiscountPrice;
     priceLabel = 'Special Price';
   } else if (showUniversalCostPlus) {
-    const costPlusHundredPrice = productCostPrice + 100;
+    const costPlusHundredPrice = (productCostPrice + 150) * 1.025;
     displayPrice = sizePrice !== null ? sizePrice : costPlusHundredPrice;
     actualSellingPrice = sizePrice !== null ? sizePrice : costPlusHundredPrice;
     priceLabel = 'Cost+$100 Price';
     showCostPrice = true;
   } else if (showLegacyCostPlus) {
-    const costPlusHundredPrice = productCostPrice + 100;
+    const costPlusHundredPrice = (productCostPrice + 150) * 1.025;
     displayPrice = sizePrice !== null ? sizePrice : costPlusHundredPrice;
     actualSellingPrice = sizePrice !== null ? sizePrice : costPlusHundredPrice;
     priceLabel = 'Your Cost+$100 Price';

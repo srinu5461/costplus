@@ -218,14 +218,14 @@ export const ProductCard = memo(function ProductCard({ product, sectionTag, prio
   const inCostPlusRange = productPrice >= 500 && productPrice <= 10000;
   const isCallForQuote = universalCostPlusEnabled && productPrice > 10000;
   const showUniversalCostPlus = universalCostPlusEnabled && inCostPlusRange && costPrice > 0;
-  const universalCostPlusPrice = costPrice + 100;
+  const universalCostPlusPrice = (costPrice + 150) * 1.025;
 
   // Legacy per-customer Cost+$100 (used when global toggle is off)
   const costPlusHundredCategories = ['refrigeration', 'ice machines', 'commercial kitchen machines'];
   const productCategory = (product.category as string)?.toLowerCase() || '';
   const isInCostPlusHundredCategory = costPlusHundredCategories.some(cat => productCategory.includes(cat));
   const meetsMinimumPriceThreshold = costPrice >= 500;
-  const costPlusHundredPrice = costPrice + 100;
+  const costPlusHundredPrice = (costPrice + 150) * 1.025;
   const showLegacyCostPlus = !universalCostPlusEnabled && hasCostPlusHundredAccess && isInCostPlusHundredCategory && meetsMinimumPriceThreshold;
 
   // Calculate display price based on priority:

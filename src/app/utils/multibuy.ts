@@ -65,7 +65,7 @@ export function getEffectivePrice(product: Product, quantity: number): number {
     localStorage.getItem('costplus100_universal_pricing_enabled') !== 'false';
   const inCostPlusRange = productPrice >= 500 && productPrice <= 10000;
   if (universalEnabled && inCostPlusRange && costPrice > 0) {
-    return costPrice + 100;
+    return (costPrice + 150) * 1.025;
   }
 
   // PRIORITY 3: Legacy per-customer Cost+$100 (when universal toggle is off)
@@ -74,7 +74,7 @@ export function getEffectivePrice(product: Product, quantity: number): number {
     const productCategory = (product.category as string)?.toLowerCase() || '';
     const isInCostPlusHundredCategory = costPlusHundredCategories.some(cat => productCategory.includes(cat));
     if (isInCostPlusHundredCategory && costPrice >= 500) {
-      return costPrice + 100;
+      return (costPrice + 150) * 1.025;
     }
   }
 
