@@ -409,9 +409,11 @@ export const ProductCard = memo(function ProductCard({ product, sectionTag, prio
                 // Cost+$100 Pricing (universal for all customers $500–$10k, or legacy per-customer)
                 <div className="flex flex-col items-center gap-1">
                   <div className="flex items-center gap-2 flex-wrap justify-center">
-                    <span className="text-sm sm:text-base font-semibold text-slate-400 line-through whitespace-nowrap">
-                      ${productPrice.toFixed(2)}
-                    </span>
+                    {productPrice > displayPrice && (
+                      <span className="text-sm sm:text-base font-semibold text-slate-400 line-through whitespace-nowrap">
+                        ${productPrice.toFixed(2)}
+                      </span>
+                    )}
                     <Badge className="bg-purple-600 hover:bg-purple-600 text-[10px] sm:text-xs font-bold whitespace-nowrap">
                       COST+$100
                     </Badge>

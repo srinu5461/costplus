@@ -1125,7 +1125,9 @@ export function ProductDetail() {
                 // COST+$100 PRICING: Universal (all customers $500–$10k) or legacy per-customer
                 <div>
                   <div className="flex items-baseline gap-3 mb-1">
-                    <span className="text-2xl font-bold text-slate-400 line-through">${displayProduct.price.toFixed(2)}</span>
+                    {displayProduct.price > displayPrice && (
+                      <span className="text-2xl font-bold text-slate-400 line-through">${displayProduct.price.toFixed(2)}</span>
+                    )}
                     <Badge className="bg-purple-600 hover:bg-purple-600 font-bold">COST+$100</Badge>
                   </div>
                   <div className="flex items-baseline gap-3 mb-1">
