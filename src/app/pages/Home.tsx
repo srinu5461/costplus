@@ -567,9 +567,9 @@ export function Home() {
       {/* ⚡ STATIC HERO BANNER: Show initially while banners load, or if no banners exist */}
       {/* ⚡ STATIC HERO BANNER: Show initially while banners load, or if no banners exist */}
 {(!bannersLoaded || activeBanners.length === 0) && (
-  <section className="bg-white py-3 w-full" data-banner-type="static">
+  <section className="bg-slate-100 py-4 w-full" data-banner-type="static">
     <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-      <div className="relative overflow-hidden rounded-2xl shadow-sm h-[200px] sm:h-[300px] md:h-[360px] lg:h-[460px] xl:h-[520px]">
+      <div className="relative overflow-hidden bg-slate-100 rounded-lg h-[200px] sm:h-[300px] md:h-[350px] lg:h-[450px] xl:h-[500px]">
         <img
           src={heroBannerImg}
           alt="Catering Equipment for Sydney, Melbourne and Brisbane"
@@ -584,20 +584,21 @@ export function Home() {
 
 {/* Banner Carousel with Thumbnails - Only show when banners are loaded and valid */}
 {bannersLoaded && activeBanners.length > 0 && (
-  <section className="bg-white py-3 w-full" data-banner-type="carousel">
+  <section className="bg-slate-100 py-4 w-full" data-banner-type="carousel">
     <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
       {/* Main Banner */}
-      <div className="relative banner-carousel mb-3 overflow-hidden rounded-2xl shadow-sm">
-        <Slider
-          ref={sliderRef}
+      <div className="relative banner-carousel mb-4 overflow-hidden">
+        <Slider 
+          ref={sliderRef} 
           {...carouselSettings}
           beforeChange={(current, next) => setCurrentSlide(next)}
         >
           {activeBanners.map((slide, index) => (
             <div key={index} className="outline-none">
+              {/* 📍 FIX: Changed outer div to a Link so the whole banner is clickable */}
               <Link
                 to={slide.link || '/products'}
-                className="block relative overflow-hidden bg-slate-100 h-[200px] sm:h-[300px] md:h-[360px] lg:h-[460px] xl:h-[520px] cursor-pointer group"
+                className="block relative overflow-hidden rounded-lg bg-slate-100 h-[200px] sm:h-[300px] md:h-[350px] lg:h-[450px] xl:h-[500px] cursor-pointer group"
               >
                 {/* Full Banner Image */}
                 <ImageWithFallback
@@ -670,18 +671,15 @@ export function Home() {
       
       {/* Featured Products */}
       {!isFullyLoading && displayFeaturedProducts.length > 0 && (
-        <section key={`featured-${forceRenderKey}`} className="py-6 md:py-10 bg-gray-50">
+        <section key={`featured-${forceRenderKey}`} className="py-4 md:py-8 bg-white">
           <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-            <div className="flex items-end justify-between mb-5 md:mb-7">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-[#E31837] mb-1">Hand picked</p>
-                <h2 className="text-2xl md:text-3xl font-bold text-[#2D3748]">
-                  {getSectionConfig('featured')?.name || 'Featured Equipment'}
-                </h2>
-              </div>
-              <Link to="/products?section=featured" className="hidden sm:flex items-center gap-1 text-sm font-medium text-[#E31837] hover:underline">
-                View all <ArrowRight className="size-3.5" />
-              </Link>
+            <div className="text-center mb-4 md:mb-6">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl mb-1 font-bold">
+                {getSectionConfig('featured')?.name || 'Featured Equipment'}
+              </h2>
+              <p className="text-muted-foreground text-sm md:text-base">
+                {getSectionConfig('featured')?.description || 'Top picks from our extensive catalog'}
+              </p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-3 sm:gap-4">
               {displayFeaturedProducts.map((product, index) => (
@@ -717,10 +715,11 @@ export function Home() {
             )}
 
             {/* View All Button */}
-            <div className="text-center mt-6 sm:hidden">
+            <div className="text-center mt-8">
               <Link to="/products?section=featured">
-                <Button size="sm" variant="outline" className="group border-[#E31837] text-[#E31837] hover:bg-[#E31837] hover:text-white">
-                  View All <ArrowRight className="size-3.5 ml-1 group-hover:translate-x-1 transition-transform" />
+                <Button size="lg" variant="outline" className="group">
+                  View All {getSectionConfig('featured')?.name || 'Featured Equipment'}
+                  <ArrowRight className="size-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
             </div>
@@ -729,170 +728,207 @@ export function Home() {
       )}
 
       {/* Value Proposition Section */}
-      <section className="py-10 md:py-14 bg-white border-y border-slate-100">
-        <div className="max-w-5xl mx-auto px-4 lg:px-6 w-full">
-          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-            <div className="flex-1 text-center md:text-left">
-              <p className="text-xs font-semibold uppercase tracking-widest text-[#E31837] mb-2">Our promise</p>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#2D3748] mb-4 leading-tight">
-                Transparent Pricing.<br />No Hidden Costs.
-              </h2>
-              <p className="text-slate-600 mb-6 text-base md:text-lg">
-                We operate on a simple, honest model — the <strong className="text-[#2D3748]">true cost price</strong> plus our fixed margin. What many call "mates rates."
+      <section className="py-12 md:py-16 bg-gradient-to-b from-white to-slate-50">
+        <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2D3748] mb-6">
+              Transparent Pricing.<br className="hidden md:block" /> No Hidden Costs.
+            </h2>
+            <p className="text-lg md:text-xl text-slate-600 mb-8">
+              We operate on a simple, honest pricing model that brings transparency back to the catering equipment industry.
+            </p>
+
+            <div className="bg-gradient-to-r from-[#E31837] to-[#C41230] text-white p-8 md:p-12 rounded-2xl shadow-2xl mb-8">
+              <p className="text-3xl md:text-5xl font-bold mb-4">
+                Cost Price + $100
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-                <Link to="/contact">
-                  <Button className="bg-[#E31837] hover:bg-[#C41230] text-white px-6 py-2.5 h-auto font-semibold">
-                    <Phone className="size-4 mr-2" />
-                    Get a Quote
-                  </Button>
-                </Link>
-                <Link to="/products">
-                  <Button variant="outline" className="border-slate-300 px-6 py-2.5 h-auto font-semibold">
-                    Browse Equipment
-                    <ArrowRight className="size-4 ml-2" />
-                  </Button>
-                </Link>
-              </div>
+              <p className="text-xl md:text-2xl mb-0">That's it. No more.</p>
             </div>
-            <div className="flex-shrink-0 w-full md:w-64">
-              <div className="bg-[#E31837] text-white rounded-2xl p-8 text-center shadow-lg">
-                <p className="text-4xl md:text-5xl font-extrabold mb-2">Cost+$100</p>
-                <p className="text-lg font-medium opacity-90">That's it. No more.</p>
-              </div>
+
+            <p className="text-lg text-slate-700 mb-8">
+              When you contact us, we provide the <strong className="text-[#2D3748]">true cost price</strong> plus our fixed $100 margin — what many call "mates rates."
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/contact">
+                <Button size="lg" className="bg-[#E31837] hover:bg-[#C41230] text-white text-lg px-8 py-6 h-auto">
+                  <Phone className="size-5 mr-2" />
+                  Get Your Quote Now
+                </Button>
+              </Link>
+              <Link to="/products">
+                <Button size="lg" variant="outline" className="text-lg px-8 py-6 h-auto border-2">
+                  Browse Equipment
+                  <ArrowRight className="size-5 ml-2" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* Social Proof Section */}
-      <section className="py-10 md:py-14 bg-gray-50">
+      <section className="py-12 md:py-16 bg-slate-50 border-y">
         <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-          <div className="text-center mb-8">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#E31837] mb-2">Track record</p>
-            <h2 className="text-2xl md:text-3xl font-bold text-[#2D3748]">
-              Trusted by Australia's Biggest Organisations
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2D3748] mb-4">
+              Trusted by Australia's Biggest Organizations
             </h2>
+            <p className="text-lg text-slate-600">
+              30+ years of combined industry experience
+            </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
-            <div className="bg-white rounded-xl p-5 text-center shadow-sm border border-slate-100">
-              <div className="text-4xl font-extrabold text-[#E31837] mb-1">30+</div>
-              <p className="text-sm font-semibold text-[#2D3748]">Years Experience</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className="bg-white p-8 rounded-xl shadow-lg text-center border-t-4 border-[#E31837]">
+              <div className="text-5xl font-bold text-[#E31837] mb-2">30+</div>
+              <p className="text-lg font-semibold text-[#2D3748] mb-2">Years Experience</p>
+              <p className="text-slate-600">Combined industry knowledge from seasoned professionals</p>
             </div>
-            <div className="bg-white rounded-xl p-5 text-center shadow-sm border border-slate-100">
-              <div className="text-4xl font-extrabold text-[#E31837] mb-1">100%</div>
-              <p className="text-sm font-semibold text-[#2D3748]">Transparent</p>
+
+            <div className="bg-white p-8 rounded-xl shadow-lg text-center border-t-4 border-[#E31837]">
+              <div className="text-5xl font-bold text-[#E31837] mb-2">100%</div>
+              <p className="text-lg font-semibold text-[#2D3748] mb-2">Transparency</p>
+              <p className="text-slate-600">No hidden markups, fees, or membership charges</p>
             </div>
-            <div className="bg-white rounded-xl p-5 text-center shadow-sm border border-slate-100">
-              <div className="text-4xl font-extrabold text-[#E31837] mb-1">$100</div>
-              <p className="text-sm font-semibold text-[#2D3748]">Fixed Markup</p>
+
+            <div className="bg-white p-8 rounded-xl shadow-lg text-center border-t-4 border-[#E31837]">
+              <div className="text-5xl font-bold text-[#E31837] mb-2">$100</div>
+              <p className="text-lg font-semibold text-[#2D3748] mb-2">Fixed Markup</p>
+              <p className="text-slate-600">Our only margin on every product we sell</p>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6 max-w-3xl mx-auto text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-4">Clients include</p>
-            <div className="flex flex-wrap justify-center items-center gap-6">
-              <span className="text-lg font-bold text-slate-700">Coles Group</span>
-              <span className="text-slate-300">·</span>
-              <span className="text-lg font-bold text-slate-700">Woolworths Group</span>
-              <span className="text-slate-300">·</span>
-              <span className="text-lg font-bold text-slate-700">The Coffee Club</span>
-              <span className="text-slate-300">·</span>
-              <span className="text-base text-slate-500">State Councils</span>
+          <div className="mt-12 bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
+            <p className="text-lg text-center mb-4 font-semibold text-[#2D3748]">
+              We've Supplied Major Brands Including:
+            </p>
+            <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8">
+              <div className="text-2xl font-bold text-slate-700">Coles Group</div>
+              <div className="text-2xl font-bold text-slate-700">Woolworths Group</div>
+              <div className="text-2xl font-bold text-slate-700">The Coffee Club</div>
+              <div className="text-lg text-slate-600">& State Councils</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Benefits Grid */}
-      <section className="py-10 md:py-14 bg-white">
+      <section className="py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-          <div className="text-center mb-8">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#E31837] mb-2">Why us</p>
-            <h2 className="text-2xl md:text-3xl font-bold text-[#2D3748]">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2D3748] mb-4">
               Why Choose Costplus100?
             </h2>
+            <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+              A buying club without membership fees, hidden catches, or marketing gimmicks
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="p-5 rounded-xl border border-slate-100 hover:border-[#E31837]/30 hover:shadow-md transition-all bg-white group">
-              <ShieldCheck className="size-6 text-[#E31837] mb-3" />
-              <h3 className="text-base font-bold text-[#2D3748] mb-1.5">Best Price Guaranteed</h3>
-              <p className="text-sm text-slate-500">Cost + $100 — no haggling, no guesswork.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
+              <div className="bg-red-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                <ShieldCheck className="size-7 text-[#E31837]" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D3748] mb-3">Best Price Guaranteed</h3>
+              <p className="text-slate-600">
+                Cost + $100 pricing means you always get the absolute best deal — no haggling needed.
+              </p>
             </div>
 
-            <div className="p-5 rounded-xl border border-slate-100 hover:border-[#E31837]/30 hover:shadow-md transition-all bg-white group">
-              <Award className="size-6 text-blue-500 mb-3" />
-              <h3 className="text-base font-bold text-[#2D3748] mb-1.5">Industry Expertise</h3>
-              <p className="text-sm text-slate-500">30+ years supplying Australia's biggest organisations.</p>
+            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
+              <div className="bg-blue-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                <Award className="size-7 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D3748] mb-3">Industry Expertise</h3>
+              <p className="text-slate-600">
+                30+ years of combined experience supplying Australia's biggest organizations.
+              </p>
             </div>
 
-            <div className="p-5 rounded-xl border border-slate-100 hover:border-[#E31837]/30 hover:shadow-md transition-all bg-white group">
-              <TrendingUp className="size-6 text-green-500 mb-3" />
-              <h3 className="text-base font-bold text-[#2D3748] mb-1.5">Wholesale Buying Power</h3>
-              <p className="text-sm text-slate-500">Importer specials normally unavailable to the public.</p>
+            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
+              <div className="bg-green-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                <TrendingUp className="size-7 text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D3748] mb-3">Wholesale Buying Power</h3>
+              <p className="text-slate-600">
+                Access to importer specials and wholesale opportunities normally unavailable to the public.
+              </p>
             </div>
 
-            <div className="p-5 rounded-xl border border-slate-100 hover:border-[#E31837]/30 hover:shadow-md transition-all bg-white group">
-              <CreditCard className="size-6 text-purple-500 mb-3" />
-              <h3 className="text-base font-bold text-[#2D3748] mb-1.5">No Hidden Fees</h3>
-              <p className="text-sm text-slate-500">No memberships, no catches. Just honest pricing.</p>
+            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
+              <div className="bg-purple-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                <CreditCard className="size-7 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D3748] mb-3">No Hidden Fees</h3>
+              <p className="text-slate-600">
+                No membership fees, no hidden markups, no catches. Just honest, transparent pricing.
+              </p>
             </div>
 
-            <div className="p-5 rounded-xl border border-slate-100 hover:border-[#E31837]/30 hover:shadow-md transition-all bg-white group">
-              <Truck className="size-6 text-orange-500 mb-3" />
-              <h3 className="text-base font-bold text-[#2D3748] mb-1.5">Fast Delivery</h3>
-              <p className="text-sm text-slate-500">Sydney, Melbourne, Brisbane & nationwide shipping.</p>
+            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
+              <div className="bg-orange-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                <Truck className="size-7 text-orange-600" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D3748] mb-3">Fast Delivery</h3>
+              <p className="text-slate-600">
+                Reliable delivery across Sydney, Melbourne, Brisbane and nationwide shipping available.
+              </p>
             </div>
 
-            <div className="p-5 rounded-xl border border-slate-100 hover:border-[#E31837]/30 hover:shadow-md transition-all bg-white group">
-              <HeadphonesIcon className="size-6 text-slate-600 mb-3" />
-              <h3 className="text-base font-bold text-[#2D3748] mb-1.5">Expert Support</h3>
-              <p className="text-sm text-slate-500">Personal service from seasoned professionals.</p>
+            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
+              <div className="bg-slate-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                <HeadphonesIcon className="size-7 text-slate-700" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D3748] mb-3">Expert Support</h3>
+              <p className="text-slate-600">
+                Personal service from experienced professionals who understand your needs.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-12 md:py-16 bg-[#2D3748]">
-        <div className="max-w-4xl mx-auto px-4 lg:px-6 w-full text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#E31837] mb-3">Get started</p>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
+      <section className="py-16 md:py-20 bg-gradient-to-br from-[#2D3748] via-[#424B54] to-[#2D3748]">
+        <div className="max-w-5xl mx-auto px-4 lg:px-6 w-full text-center">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
             Ready to Experience True Transparency?
           </h2>
-          <p className="text-slate-300 mb-8 text-base md:text-lg">
-            Honest Cost + $100 pricing on all catering equipment. No surprises.
+          <p className="text-xl md:text-2xl text-slate-200 mb-8">
+            Contact us today for honest Cost + $100 pricing on all catering equipment
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Link to="/contact">
-              <Button className="bg-[#E31837] hover:bg-[#C41230] text-white px-8 py-2.5 h-auto font-semibold shadow-lg">
-                <Phone className="size-4 mr-2" />
+              <Button size="lg" className="bg-[#E31837] hover:bg-[#C41230] text-white text-lg px-10 py-7 h-auto shadow-xl">
+                <Phone className="size-6 mr-2" />
                 Get Quote Now
               </Button>
             </Link>
             <Link to="/products">
-              <Button variant="outline" className="bg-transparent hover:bg-white/10 text-white border-white/30 px-8 py-2.5 h-auto font-semibold">
-                <Search className="size-4 mr-2" />
+              <Button size="lg" variant="outline" className="bg-white hover:bg-slate-100 text-[#2D3748] border-0 text-lg px-10 py-7 h-auto shadow-xl">
+                <Search className="size-6 mr-2" />
                 Browse Catalogue
               </Button>
             </Link>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-8 text-sm text-slate-400">
-            <div className="flex items-center gap-2 justify-center">
-              <Phone className="size-4 text-[#E31837]" />
-              <span>Call for instant answers</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 text-white">
+            <div>
+              <Phone className="size-8 mx-auto mb-3 text-[#E31837]" />
+              <p className="font-semibold text-lg mb-1">Call Us</p>
+              <p className="text-slate-300">Get instant answers</p>
             </div>
-            <div className="flex items-center gap-2 justify-center">
-              <Mail className="size-4 text-[#E31837]" />
-              <span>Email for detailed quotes</span>
+            <div>
+              <Mail className="size-8 mx-auto mb-3 text-[#E31837]" />
+              <p className="font-semibold text-lg mb-1">Email Quote</p>
+              <p className="text-slate-300">Detailed pricing info</p>
             </div>
-            <div className="flex items-center gap-2 justify-center">
-              <Search className="size-4 text-[#E31837]" />
-              <span>Browse 13,000+ products</span>
+            <div>
+              <Search className="size-8 mx-auto mb-3 text-[#E31837]" />
+              <p className="font-semibold text-lg mb-1">Browse First</p>
+              <p className="text-slate-300">Explore our range</p>
             </div>
           </div>
         </div>
