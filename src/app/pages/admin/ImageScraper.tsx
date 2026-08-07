@@ -265,7 +265,7 @@ export default function ImageScraper() {
       const sortedData = job.data.sort((a: any, b: any) => a.code.localeCompare(b.code));
 
       // Convert to CSV
-      const headers = ['Code', 'Brand', 'Brand Logo', 'Trade Price', 'Error'];
+      const headers = ['Code', 'Brand', 'Brand Logo', 'Trade Price', 'In Stock', 'Back Order Available', 'Promised Date', 'Error'];
       const csvRows = [
         headers.join(','),
         ...sortedData.map((row: any) => [
@@ -273,6 +273,9 @@ export default function ImageScraper() {
           row.brand ? `"${row.brand}"` : '',
           row.brandLogo || '',
           row.tradePrice || 0,
+          row.inStock !== undefined ? row.inStock : '',
+          row.backOrderAvailable !== undefined ? row.backOrderAvailable : '',
+          row.uropaPromisedDate || '',
           row.error ? `"${row.error}"` : ''
         ].join(','))
       ];

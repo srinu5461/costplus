@@ -587,6 +587,119 @@ descriptionSync.get('/test-uropa/:code', async (c) => {
 });
 
 // ============================================
+// GET /description-sync/test-sizes/:code - READ ONLY: Check variant/size data for one product
+// No DB writes — safe to run on any product code
+// ============================================
+descriptionSync.get('/test-sizes/:code', async (c) => {
+  try {
+    const productCode = c.req.param('code');
+    console.log(`🔍 [Test Sizes] Checking variants for: ${productCode}`);
+
+    const token = await getToken();
+    if (!token) {
+      return c.json({ error: 'Uropa API token not configured' }, 400);
+    }
+
+    const headers = {
+      'Authorization': formatAuthHeader(token),
+      'Content-Type': 'application/json',
+    };
+
+    // Use fields=FULL endpoint (same as price sync) — returns complete variant data
+    const UROPA_API_BASE_LOCAL = 'https://p1-api.nisbets.com.au/occ/v2/uropa-au';
+    const fullUrl = `${UROPA_API_BASE_LOCAL}/products/${productCode}?lang=en&curr=AUD&fields=FULL`;
+    console.log(`🌐 [Test Sizes] Fetching: ${fullUrl}`);
+
+    const response = await fetch(fullUrl, { method: 'GET', headers });
+
+    if (!response.ok) {
+      return c.json({
+        error: `Uropa API error: ${response.status} ${response.statusText}`,
+        url: fullUrl,
+      }, response.status);
+    }
+
+    const p = await response.json();
+
+    // Extract variant/size related fields — no DB touch
+    const variantMatrix   = p.variantMatrix   || null;
+    const baseOptions     = p.baseOptions     || null;
+    const variantOptions  = p.variantOptions  || null;
+    const multidimensional = p.multidimensional ?? null;
+    const baseProduct     = p.baseProduct     || null;
+
+    // Build a clean summary of what sizes/variants look like (ALL sizes, including OOS)
+    const sizeOptionsSummary: Array<{
+      code: string;
+      name: string;
+      price: number | null;
+      currency: string;
+      stockStatus: string;     // raw Uropa stock string e.g. "inStock", "outOfStock", "lowStock"
+      inStock: boolean;
+      stockLevel: number | null;
+    }> = [];
+
+    // Try baseOptions first (most common for size variants)
+    if (Array.isArray(baseOptions) && baseOptions.length > 0) {
+      for (const opt of baseOptions) {
+        const options = opt.options || [];
+        for (const o of options) {
+          const stockStatus = o.stock?.stockLevelStatus || 'unknown';
+          sizeOptionsSummary.push({
+            code:        o.code || o.variantOptionQualifiers?.[0]?.value || '',
+            name:        o.variantOptionQualifiers?.map((q: any) => `${q.qualifier}: ${q.value}`).join(' | ') || o.code || '',
+            price:       o.priceData?.value ?? null,
+            currency:    o.priceData?.currencyIso || 'AUD',
+            stockStatus,
+            inStock:     stockStatus !== 'outOfStock',
+            stockLevel:  o.stock?.stockLevel ?? null,
+          });
+        }
+      }
+    }
+
+    // Try variantMatrix as fallback
+    if (sizeOptionsSummary.length === 0 && Array.isArray(variantMatrix) && variantMatrix.length > 0) {
+      for (const row of variantMatrix) {
+        const stockStatus = row.variantOption?.stock?.stockLevelStatus || 'unknown';
+        sizeOptionsSummary.push({
+          code:        row.variantOption?.code || '',
+          name:        row.variantValueCategory?.name || row.variantOption?.code || '',
+          price:       row.variantOption?.priceData?.value ?? null,
+          currency:    row.variantOption?.priceData?.currencyIso || 'AUD',
+          stockStatus,
+          inStock:     stockStatus !== 'outOfStock',
+          stockLevel:  row.variantOption?.stock?.stockLevel ?? null,
+        });
+      }
+    }
+
+    return c.json({
+      success: true,
+      productCode,
+      note: 'READ ONLY — no database changes made',
+      hasVariants: sizeOptionsSummary.length > 0,
+      variantCount: sizeOptionsSummary.length,
+      sizeOptionsSummary,           // Clean extracted summary
+      // Raw fields for inspection
+      raw: {
+        baseProduct,
+        multidimensional,
+        baseOptionsRaw:    baseOptions,
+        variantOptionsRaw: variantOptions,
+        variantMatrixRaw:  variantMatrix,
+        // Top-level keys so you can see everything available
+        allTopLevelKeys: Object.keys(p),
+      },
+    });
+
+  } catch (error) {
+    console.error('❌ [Test Sizes] Error:', error);
+    return c.json({ error: String(error) }, 500);
+  }
+});
+
+// ============================================
 // GET /description-sync/debug/:productId - Debug single product data
 // ============================================
 descriptionSync.get('/debug/:productId', async (c) => {

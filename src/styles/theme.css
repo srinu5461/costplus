@@ -145,6 +145,7 @@
   }
 }
 
+
 /* Scrolling carousel animation for header benefits banner */
 @keyframes scroll {
   0% {
@@ -215,3 +216,7 @@
 /* ============================================
    SKELETON LOADER ANIMATIONS
    ============================================ */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}

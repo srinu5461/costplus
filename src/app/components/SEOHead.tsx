@@ -256,7 +256,7 @@ export function generateOrganizationSchema() {
     name: 'Costplus100 Catering Equipment',
     legalName: 'COSTPLUS100 PTY LTD',
     url: 'https://costplus100.com.au',
-    logo: 'https://costplus100.com.au/logo.png',
+    logo: 'https://costplus100.com.au/Square_Logo_2025_Black.png',
     description: 'Australia\'s leading supplier of professional catering equipment and commercial kitchen solutions',
     address: {
       '@type': 'PostalAddress',

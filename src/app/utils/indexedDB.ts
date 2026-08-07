@@ -85,6 +85,32 @@ export async function setCachedDataIDB(key: string, data: any, version: string =
 }
 
 /**
+ * Get the timestamp of a cached entry without returning the data
+ */
+export async function getCachedTimestampIDB(key: string, requiredVersion: string = '1'): Promise<number | null> {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get(key);
+
+    return new Promise((resolve) => {
+      request.onsuccess = () => {
+        const result = request.result as CacheData | undefined;
+        if (!result || result.version !== requiredVersion) {
+          resolve(null);
+          return;
+        }
+        resolve(result.timestamp);
+      };
+      request.onerror = () => resolve(null);
+    });
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Get data from IndexedDB cache
  */
 export async function getCachedDataIDB(key: string, requiredVersion: string = '1'): Promise<any | null> {

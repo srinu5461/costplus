@@ -376,10 +376,13 @@ export function Footer() {
               </div>
 
               {/* Payment Processors */}
-              <div className="flex items-center gap-3">
-                <SquareLogoWhite className="h-10 w-auto" />
-                <div className="bg-white rounded-md px-4 py-2 flex items-center justify-center">
-                  <GooglePayLogo className="h-12 w-auto" />
+              <div className="flex items-center gap-2 flex-wrap">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Visa_Logo.png/120px-Visa_Logo.png" alt="Visa" className="h-7 object-contain bg-white border border-slate-200 rounded px-1.5" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/120px-Mastercard-logo.svg.png" alt="Mastercard" className="h-7 object-contain bg-white border border-slate-200 rounded px-1.5" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/American_Express_logo.svg/120px-American_Express_logo.svg.png" alt="Amex" className="h-7 object-contain bg-white border border-slate-200 rounded px-1.5" />
+                <SquareLogoWhite className="h-9 w-auto" />
+                <div className="bg-white rounded-md px-3 py-1.5 flex items-center justify-center">
+                  <GooglePayLogo className="h-10 w-auto" />
                 </div>
               </div>
             </div>

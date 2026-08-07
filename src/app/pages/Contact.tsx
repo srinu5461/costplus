@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { projectId, publicAnonKey } from '/utils/supabase/info';
 import { logger } from '../utils/logger';
 import { notify } from '../utils/notifications';
+import { SEOHead } from '../components/SEOHead';
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -69,6 +70,12 @@ export function Contact() {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <SEOHead
+        title="Contact Us | Cost Plus 100 Catering Equipment"
+        description="Contact Cost Plus 100 for commercial catering equipment quotes. Phone 1300 503 043 or email admin@costplus100.com.au. Fast response. Australia-wide delivery."
+        keywords="contact catering equipment supplier, commercial kitchen equipment quote, catering supplies Australia enquiry"
+        canonical="https://costplus100.com.au/contact"
+      />
       <div className="max-w-7xl mx-auto px-4 lg:px-6 py-8 md:py-16">
         <h1 className="text-3xl md:text-4xl mb-6 md:mb-8 text-center font-bold text-[#2D3748]">Contact Us</h1>
 

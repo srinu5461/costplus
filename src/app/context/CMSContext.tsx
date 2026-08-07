@@ -74,6 +74,7 @@ interface CMSContextType {
   updateProduct: (id: string, product: Product) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   updateCategories: (categories: string[] | CategoryNode[]) => Promise<void>;
+  updateCategoryTree: (tree: CategoryNode[]) => void;
   updateHeader: (header: HeaderSettings) => Promise<void>;
   updateFooter: (footer: FooterSettings) => Promise<void>;
   updateHomePage: (homepage: HomePageSettings) => Promise<void>;
@@ -684,6 +685,10 @@ export function CMSProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updateCategoryTree = (tree: CategoryNode[]) => {
+    setData((prev) => ({ ...prev, categoryTree: tree }));
+  };
+
   const updateHeader = async (header: HeaderSettings) => {
     setData((prev) => ({ ...prev, header }));
 
@@ -939,6 +944,7 @@ export function CMSProvider({ children }: { children: ReactNode }) {
         updateProduct,
         deleteProduct,
         updateCategories,
+        updateCategoryTree,
         updateHeader,
         updateFooter,
         updateHomePage,

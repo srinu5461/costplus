@@ -190,14 +190,11 @@ app.post('/export-uropa', async (c) => {
       .filter((p: any) => p && (p.code || p.sku || p.productCode))
       .map((p: any) => p.code || p.sku || p.productCode);
 
-    // Create a lookup map for brand and brandLogo as FALLBACK (if not found in Uropa API)
+    // Create a lookup map: code → full product object (for KV updates + brand fallback)
     const productMap = new Map(
       allProducts.map((p: any) => [
         p.code || p.sku || p.productCode,
-        {
-          brand: p.brand || p.manufacturer || '',
-          brandLogo: p.brandLogo || p.brandLogoUrl || ''
-        }
+        p
       ])
     );
 
@@ -216,7 +213,7 @@ app.post('/export-uropa', async (c) => {
     let existingJob = await kv.get(`uropa-export:job:${jobId}`);
     const existingData = existingJob?.data || [];
 
-    const csvData: Array<{code: string, brand: string, brandLogo: string, tradePrice: number, error?: string}> = [...existingData];
+    const csvData: Array<{code: string, brand: string, brandLogo: string, tradePrice: number, inStock?: boolean, backOrderAvailable?: boolean, uropaPromisedDate?: string, error?: string}> = [...existingData];
     let successCount = existingJob?.success || 0;
     let errorCount = existingJob?.errors || 0;
 
@@ -245,7 +242,7 @@ app.post('/export-uropa', async (c) => {
 
           if (!response.ok) {
             console.error(`❌ [Uropa API] Failed for ${code}: HTTP ${response.status}`);
-            csvData.push({ code, brand: productInfo.brand, brandLogo: productInfo.brandLogo, tradePrice: 0, error: `API error ${response.status}` });
+            csvData.push({ code, brand: productInfo.brand || productInfo.manufacturer || '', brandLogo: productInfo.brandLogo || productInfo.brandLogoUrl || '', tradePrice: 0, error: `API error ${response.status}` });
             errorCount++;
             return;
           }
@@ -260,13 +257,13 @@ app.post('/export-uropa', async (c) => {
           let brandName = actualProduct?.brandLogo?.altText ||
                          actualProduct?.manufacturer ||
                          actualProduct?.brandName ||
-                         productInfo.brand ||
+                         productInfo.brand || productInfo.manufacturer ||
                          '';
 
           // Extract brand logo URL from Uropa API (brandLogo.url contains the image URL)
           let brandLogo = actualProduct?.brandLogo?.url ||
                          actualProduct?.manufacturerLogo?.url ||
-                         productInfo.brandLogo ||
+                         productInfo.brandLogo || productInfo.brandLogoUrl ||
                          '';
 
           console.log(`🏷️ [Brand Data] ${code}: name="${brandName}", logo="${brandLogo}"`);
@@ -296,16 +293,23 @@ app.post('/export-uropa', async (c) => {
             priceSource = 'costPrice';
           }
 
-          console.log(`[Export Uropa] ${code}: Brand=${brandName}, Price=$${tradePrice} (from ${priceSource})`);
+          // Extract stock / availability fields
+          const uropaStockStatus = actualProduct?.stock?.stockLevelStatus || actualProduct?.stockLevelStatus;
+          const uropaInStock = uropaStockStatus === 'inStock';
+          const uropaBackOrderAvailable = actualProduct?.stock?.backorderAvailable || actualProduct?.backorderAvailable || false;
+          const uropaAvailabilityMessage = actualProduct?.availabilityMessage?.message || null;
+          const uropaPromisedDate = actualProduct?.availabilityMessage?.promisedDate ||
+            (uropaAvailabilityMessage?.match(/\d{2}\/\d{2}\/\d{2,4}/)?.[0]) || null;
 
-          csvData.push({ code, brand: brandName, brandLogo: brandLogo, tradePrice });
+          console.log(`[Export Uropa] ${code}: Brand=${brandName}, Price=$${tradePrice} (from ${priceSource}), inStock=${uropaInStock}, backOrder=${uropaBackOrderAvailable}, promisedDate=${uropaPromisedDate}`);
+
+          csvData.push({ code, brand: brandName, brandLogo: brandLogo, tradePrice, inStock: uropaInStock, backOrderAvailable: uropaBackOrderAvailable, uropaPromisedDate: uropaPromisedDate || '' });
           successCount++;
 
         } catch (error) {
-          // Fallback to database info on error
-          const productInfo = productMap.get(code) || { brand: '', brandLogo: '' };
+          const productInfo = productMap.get(code) || {};
           console.error(`❌ [Uropa API] Exception for ${code}:`, error);
-          csvData.push({ code, brand: productInfo.brand, brandLogo: productInfo.brandLogo, tradePrice: 0, error: error instanceof Error ? error.message : 'Unknown error' });
+          csvData.push({ code, brand: productInfo.brand || productInfo.manufacturer || '', brandLogo: productInfo.brandLogo || productInfo.brandLogoUrl || '', tradePrice: 0, error: error instanceof Error ? error.message : 'Unknown error' });
           errorCount++;
         }
       }));

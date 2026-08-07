@@ -4,7 +4,7 @@ import { useState } from 'react';
 interface SizeSelectorProps {
   variants: SizeVariant[];
   selectedSize: string | null;
-  onSizeChange: (size: string, price: number) => void;
+  onSizeChange: (size: string, price: number, multiBuyOptions?: any[]) => void;
 }
 
 export function SizeSelector({ variants, selectedSize, onSizeChange }: SizeSelectorProps) {
@@ -40,7 +40,7 @@ export function SizeSelector({ variants, selectedSize, onSizeChange }: SizeSelec
           onChange={(e) => {
             const selectedVariant = variants.find(v => v.size === e.target.value);
             if (selectedVariant) {
-              onSizeChange(selectedVariant.size, selectedVariant.price);
+              onSizeChange(selectedVariant.size, selectedVariant.price, selectedVariant.multiBuyOptions);
             }
           }}
           className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-white text-[#2D3748] font-medium focus:outline-none focus:ring-2 focus:ring-[#E31837] focus:border-transparent appearance-none cursor-pointer"

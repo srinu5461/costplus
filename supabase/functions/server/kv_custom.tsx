@@ -121,6 +121,46 @@ export const mdel = async (keys: string[]): Promise<void> => {
   }
 };
 
+// Find a single product by a code field without loading all products into memory
+export const findProductByCode = async (code: string): Promise<{ key: string; value: any } | null> => {
+  const supabase = client();
+  // Try each common code field via PostgREST JSON filtering
+  for (const field of ['code', 'sku', 'productCode', 'id']) {
+    const { data, error } = await supabase
+      .from(TABLE_NAME)
+      .select('key, value')
+      .like('key', 'products:%')
+      .filter(`value->>` + field, 'eq', code)
+      .limit(1)
+      .maybeSingle();
+    if (!error && data) return { key: data.key, value: data.value };
+  }
+  return null;
+};
+
+// Count products without loading values
+export const countByPrefix = async (prefix: string): Promise<number> => {
+  const supabase = client();
+  const { count, error } = await supabase
+    .from(TABLE_NAME)
+    .select('key', { count: 'exact', head: true })
+    .like('key', `${prefix}%`);
+  if (error) throw new Error(`KV CountByPrefix Error: ${error.message}`);
+  return count || 0;
+};
+
+// Paginated fetch — returns one page of values
+export const getByPrefixPaged = async (prefix: string, offset: number, limit: number): Promise<any[]> => {
+  const supabase = client();
+  const { data, error } = await supabase
+    .from(TABLE_NAME)
+    .select('value')
+    .like('key', `${prefix}%`)
+    .range(offset, offset + limit - 1);
+  if (error) throw new Error(`KV GetByPrefixPaged Error: ${error.message}`);
+  return (data || []).map(d => d.value);
+};
+
 export const getByPrefix = async (prefix: string): Promise<any[]> => {
   const supabase = client();
   const PAGE_SIZE = 1000;

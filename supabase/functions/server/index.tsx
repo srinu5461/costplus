@@ -14,6 +14,7 @@ import pricing from './routes-pricing.tsx';
 import specials from './routes-specials.tsx'; // NEW: Specials & BOGO promotions
 import imageScraper from './routes-image-scraper.tsx'; // NEW: Image scraper
 import promotions from './routes-promotions.tsx'; // NEW: Promotional pricing (doesn't modify products)
+import sizeSync from './routes-size-sync.tsx'; // NEW: Size variant sync
 import vouchers from './vouchers.tsx'; // NEW: Vouchers & gift cards
 import seo from './seo.tsx';
 import ai from './ai.tsx';
@@ -28,6 +29,7 @@ import orders from './orders.tsx';
 import pickupLocations from './pickup-locations.tsx';
 import menuBrands from './menu-brands.tsx';
 import syncProducts from './sync-products.tsx';
+import ebay from './routes-ebay.tsx';
 import { registerSitemapRoute } from './sitemap.tsx';
 
 const app = new Hono();
@@ -3323,19 +3325,19 @@ app.post("/make-server-d1fbc049/shipping/calculate", async (c) => {
   try {
     console.log('=== SHIPPING CALCULATION REQUEST ===');
     
-    const { postcode, cartTotal, categories } = await c.req.json();
-    
+    const { postcode, cartTotal, categories, cartItems } = await c.req.json();
+
     console.log('Shipping calculation params:', { postcode, cartTotal, categoriesCount: categories?.length });
-    
+
     if (!postcode || cartTotal === undefined || !categories) {
-      return c.json({ 
+      return c.json({
         error: 'Missing required fields',
         required: ['postcode', 'cartTotal', 'categories']
       }, 400);
     }
-    
+
     // Calculate shipping using the shipping logic
-    const result = calculateShipping(postcode, cartTotal, categories);
+    const result = calculateShipping(postcode, cartTotal, categories, cartItems);
     
     console.log('Shipping calculation result:', result);
     
@@ -3466,10 +3468,12 @@ app.route('/make-server-d1fbc049/customers', customers);
 app.route('/make-server-d1fbc049/pricing', pricing);
 app.route('/make-server-d1fbc049/price-sync', priceSync);
 app.route('/make-server-d1fbc049/description-sync', descriptionSync);
+app.route('/make-server-d1fbc049/size-sync', sizeSync);
 app.route('/make-server-d1fbc049/specials', specials);
 app.route('/make-server-d1fbc049/image-scraper', imageScraper);
 app.route('/make-server-d1fbc049/promotions', promotions);
 app.route('/make-server-d1fbc049/vouchers', vouchers);
+app.route('/make-server-d1fbc049/ebay', ebay);
 app.route('/', syncProducts);
 
 // Mount business routes

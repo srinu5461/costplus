@@ -35,6 +35,7 @@ import { SizeSelector } from '../components/SizeSelector';
 import { projectId, publicAnonKey } from '/utils/supabase/info';
 import { getProductBadge, getSpecialsForProduct } from '../utils/bogoCalculator';
 import { SEOHead, generateProductSchema, generateBreadcrumbSchema } from '../components/SEOHead';
+import { useProducts } from '../../hooks/useProducts';
 
 const API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-d1fbc049`;
 
@@ -72,6 +73,9 @@ export function ProductDetail() {
 
   // Use CMS products ONLY if they're already loaded (don't wait for them)
   const allProducts = data.products || [];
+
+  // CDN products for related products (avoids OOM server fetch)
+  const { data: cdnProducts } = useProducts();
 
   const loading = cmsLoading;
 
@@ -515,39 +519,10 @@ export function ProductDetail() {
     }
   }, [productImages.length, selectedImage]);
 
-  // Related products: Fetch all products from server for filtering
-  const [allProductsForRelated, setAllProductsForRelated] = useState<any[]>([]);
-  const [loadingAllProducts, setLoadingAllProducts] = useState(false);
-
-  useEffect(() => {
-    // If CMS already has products, use those
-    if (allProducts.length > 0) {
-      setAllProductsForRelated(allProducts);
-      return;
-    }
-
-    // Otherwise, fetch all products from server (with high limit to get all 13,778)
-    const fetchAllProducts = async () => {
-      setLoadingAllProducts(true);
-      try {
-        const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-d1fbc049/products?limit=15000`, {
-          headers: { 'Authorization': `Bearer ${publicAnonKey}` },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          const productsArray = Array.isArray(data) ? data : (data.products || []);
-          setAllProductsForRelated(productsArray);
-        }
-      } catch (error) {
-        console.error('[Related Products] Failed to fetch all products:', error);
-      } finally {
-        setLoadingAllProducts(false);
-      }
-    };
-
-    fetchAllProducts();
-  }, [allProducts.length]);
+  // Related products: use CDN chunks (avoids OOM server fetch)
+  const allProductsForRelated = cdnProducts && cdnProducts.length > 0
+    ? cdnProducts
+    : allProducts;
 
   // Filter related products from the same category
   const relatedAccessoriesAndSpares = useMemo(() => {
@@ -730,13 +705,13 @@ export function ProductDetail() {
     actualSellingPrice = sizePrice !== null ? sizePrice : specialDiscountPrice;
     priceLabel = 'Special Price';
   } else if (showUniversalCostPlus) {
-    const costPlusHundredPrice = productCostPrice + 100;
+    const costPlusHundredPrice = (productCostPrice + 150) * 1.025;
     displayPrice = sizePrice !== null ? sizePrice : costPlusHundredPrice;
     actualSellingPrice = sizePrice !== null ? sizePrice : costPlusHundredPrice;
     priceLabel = 'Cost+$100 Price';
     showCostPrice = true;
   } else if (showLegacyCostPlus) {
-    const costPlusHundredPrice = productCostPrice + 100;
+    const costPlusHundredPrice = (productCostPrice + 150) * 1.025;
     displayPrice = sizePrice !== null ? sizePrice : costPlusHundredPrice;
     actualSellingPrice = sizePrice !== null ? sizePrice : costPlusHundredPrice;
     priceLabel = 'Your Cost+$100 Price';
@@ -1150,7 +1125,9 @@ export function ProductDetail() {
                 // COST+$100 PRICING: Universal (all customers $500–$10k) or legacy per-customer
                 <div>
                   <div className="flex items-baseline gap-3 mb-1">
-                    <span className="text-2xl font-bold text-slate-400 line-through">${displayProduct.price.toFixed(2)}</span>
+                    {displayProduct.price > displayPrice && (
+                      <span className="text-2xl font-bold text-slate-400 line-through">${displayProduct.price.toFixed(2)}</span>
+                    )}
                     <Badge className="bg-purple-600 hover:bg-purple-600 font-bold">COST+$100</Badge>
                   </div>
                   <div className="flex items-baseline gap-3 mb-1">

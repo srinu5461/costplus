@@ -153,7 +153,7 @@ export const updateSEOTags = async (config: SEOConfig) => {
  * Image will be automatically fetched from first active banner
  */
 export const homepageSEO: SEOConfig = {
-  title: 'Costplus - Professional Catering Equipment Supplier Australia',
+  title: 'Catering Equipment & Commercial Kitchen Supplies | Cost Plus 100',
   description: 'Australia\'s premier supplier of commercial catering equipment. Shop 13,777+ professional products from leading brands like Polar, Thor, and Apuro. Competitive pricing for restaurants, hotels, and professional kitchens.',
   url: 'https://costplus100.com.au',
   type: 'website',

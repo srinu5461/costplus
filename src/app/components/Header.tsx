@@ -447,30 +447,18 @@ export function Header() {
         <div className="max-w-7xl mx-auto px-4 lg:px-6 py-2 w-full">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0">
             <div className="flex items-center gap-4 flex-wrap justify-center sm:justify-start">
-              <span className="flex items-center gap-1.5 text-slate-700">
+              <a href="mailto:admin@costplus100.com.au" className="flex items-center gap-1.5 text-slate-700 hover:text-[#E31837] transition-colors">
                 <Mail className="size-3.5" />
-                <span className="font-medium">info@costplus100.com.au</span>
-              </span>
+                <span className="font-medium">admin@costplus100.com.au</span>
+              </a>
               <span className="hidden lg:flex items-center gap-1.5 text-slate-600">
                 <Clock className="size-3.5" />
                 {header.workingHours}
               </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowQuoteModal(true)}
-                className="flex items-center gap-2 bg-[#E31837] hover:bg-[#C41230] text-white px-4 py-1.5 rounded-md transition-colors font-semibold"
-              >
+              <a href="tel:1800151624" className="hidden lg:flex items-center gap-1.5 font-bold text-[#E31837] hover:text-[#C41230] transition-colors">
                 <Phone className="size-3.5" />
-                Get Quote
-              </button>
-              <Link
-                to="/contact"
-                className="flex items-center gap-2 bg-slate-700 hover:bg-slate-800 text-white px-4 py-1.5 rounded-md transition-colors font-semibold"
-              >
-                <Mail className="size-3.5" />
-                Contact Us
-              </Link>
+                1800 151 624
+              </a>
             </div>
           </div>
         </div>
@@ -485,7 +473,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden p-2 shrink-0"
+              className="lg:hidden p-2 shrink-0"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
@@ -854,9 +842,39 @@ export function Header() {
         </div>
       </div>
 
-      {/* Navigation - Category Navigation - Desktop Only */}
-      <div className="hidden lg:block">
-        <CategoryNavigation />
+      {/* Navigation Bar - Desktop Only */}
+      <div className="hidden lg:block bg-[#2D3748] w-full">
+        <div className="max-w-7xl mx-auto px-4 lg:px-6">
+          <nav className="flex items-center h-12">
+            <Link to="/" className="flex items-center gap-2 px-4 h-full text-white text-sm font-bold transition-colors border-r border-white/10 bg-[#E31837] hover:bg-[#C41230]">
+              <Home className="size-4" /> Home
+            </Link>
+            <Link to="/brands" className="flex items-center gap-2 px-4 h-full text-white text-sm font-bold hover:bg-white/10 transition-colors border-r border-white/10">
+              <Award className="size-4" /> Brands
+            </Link>
+            <Link to="/products" className="flex items-center gap-2 px-4 h-full text-yellow-300 text-sm font-bold hover:bg-white/10 transition-colors border-r border-white/10">
+              <BookOpen className="size-4" /> Cost+$100 Catalogue
+            </Link>
+            <Link to="/products?multibuy=true" className="flex items-center gap-2 px-4 h-full text-white text-sm font-bold hover:bg-white/10 transition-colors">
+              <Tag className="size-4" /> Multi-buy Deals
+            </Link>
+            <button onClick={() => setShowQuoteModal(true)} className="flex items-center gap-2 px-4 h-full text-white text-sm font-bold bg-[#E31837] hover:bg-[#C41230] transition-colors border-r border-white/10">
+              <Phone className="size-4" /> Get Quote
+            </button>
+            <Link to="/brands/polar" className="flex items-center gap-2 px-4 h-full text-white text-sm font-bold hover:bg-white/10 transition-colors border-r border-white/10">
+              <Grid3x3 className="size-4" /> Polar Refrigeration
+            </Link>
+            <Link to="/brands/thor" className="flex items-center gap-2 px-4 h-full text-white text-sm font-bold hover:bg-white/10 transition-colors border-r border-white/10">
+              <Grid3x3 className="size-4" /> Thor Range
+            </Link>
+            <Link to="/contact" className="flex items-center gap-2 px-4 h-full text-white text-sm font-bold hover:bg-white/10 transition-colors border-r border-white/10">
+              <Mail className="size-4" /> Contact Us
+            </Link>
+            <Link to="/about" className="flex items-center gap-2 px-4 h-full text-white text-sm font-bold hover:bg-white/10 transition-colors">
+              About Us
+            </Link>
+          </nav>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -973,27 +991,23 @@ export function Header() {
                   <span className="font-medium text-[#E31837]">Get Quote</span>
                 </button>
 
-                {menuSettings.showBrands && (
-                  <Link
-                    to="/brands"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-2 p-3 hover:bg-slate-50 rounded-lg transition-colors"
-                  >
-                    <Award className="size-5 text-[#E31837]" />
-                    <span className="font-medium">Brands</span>
-                  </Link>
-                )}
+                <Link
+                  to="/brands"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-2 p-3 hover:bg-slate-50 rounded-lg transition-colors"
+                >
+                  <Award className="size-5 text-[#E31837]" />
+                  <span className="font-medium">Brands</span>
+                </Link>
 
-                {menuSettings.showPromotions && (
-                  <Link
-                    to="/promotions"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-2 p-3 hover:bg-slate-50 rounded-lg transition-colors"
-                  >
-                    <Tag className="size-5 text-[#E31837]" />
-                    <span className="font-medium">Promotions</span>
-                  </Link>
-                )}
+                <Link
+                  to="/products?multibuy=true"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-2 p-3 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors"
+                >
+                  <Tag className="size-5 text-yellow-600" />
+                  <span className="font-medium text-yellow-800">Multi-buy Deals</span>
+                </Link>
 
                 {/* Dynamic Menu Brands */}
                 {menuBrands.map((brand) => (

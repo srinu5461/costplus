@@ -120,6 +120,14 @@ interface SyncLog {
 // POST /price-sync/run - Manual trigger price sync
 // ============================================
 priceSync.post('/run', async (c) => {
+  // /run loads all 13k products into memory and hits the edge function memory limit.
+  // Use /run-batch instead — the cron calls it every minute and processes 20 products at a time.
+  return c.json({
+    success: false,
+    error: 'Use /run-batch instead. The full /run endpoint loads all products into memory and exceeds the edge function memory limit. The cron job (size-sync-auto) calls /run-batch every minute automatically.',
+    hint: 'Check progress at /price-sync/status or /price-sync/batch-status'
+  }, 400);
+
   const startTime = Date.now();
   const syncLog: SyncLog = {
     timestamp: new Date().toISOString(),
@@ -245,10 +253,35 @@ priceSync.post('/run', async (c) => {
               0
             );
             
+            // Always extract stock/availability from Uropa (save regardless of price change)
+            const uropaStockStatus = uropaProduct.stock?.stockLevelStatus || uropaProduct.stockLevelStatus;
+            const uropaInStock = uropaStockStatus === 'inStock';
+            const uropaBackOrderAvailable = uropaProduct.stock?.backorderAvailable || uropaProduct.backorderAvailable || false;
+            const uropaAvailabilityMessage = uropaProduct.availabilityMessage?.message || null;
+            const uropaPromisedDate = uropaProduct.availabilityMessage?.promisedDate ||
+              (uropaAvailabilityMessage?.match(/\d{2}\/\d{2}\/\d{2,4}/)?.[0]) || null;
+
             // Check if price changed (allow 0.01 difference for rounding)
-            if (Math.abs(uropaCost - dbCost) < 0.01) {
-              // No change
-              console.log(`✅ [Price Sync] No change for ${productCode}: DB cost=${dbCost}, Uropa cost=${uropaCost}`);
+            const priceChanged = Math.abs(uropaCost - dbCost) >= 0.01;
+
+            if (!priceChanged) {
+              // Price unchanged — still update stock/availability fields
+              const stockUpdated = product.inStock !== uropaInStock ||
+                product.backOrderAvailable !== uropaBackOrderAvailable ||
+                product.uropaPromisedDate !== uropaPromisedDate;
+
+              if (stockUpdated) {
+                await kv.set(`products:${product.id}`, {
+                  ...product,
+                  inStock: uropaInStock,
+                  backOrderAvailable: uropaBackOrderAvailable,
+                  uropaPromisedDate,
+                  lastSyncedWithUropa: new Date().toISOString(),
+                });
+                console.log(`📦 [Price Sync] Stock updated for ${productCode}: inStock=${uropaInStock}, backOrder=${uropaBackOrderAvailable}`);
+              } else {
+                console.log(`✅ [Price Sync] No change for ${productCode}: cost=${dbCost}, inStock=${uropaInStock}`);
+              }
               return null;
             }
 
@@ -261,26 +294,24 @@ priceSync.post('/run', async (c) => {
             const pricingResult = calculateSellingPrice(uropaCost, pricingConfig);
             const oldPricingResult = calculateSellingPrice(dbCost, pricingConfig);
 
-            // Update product in database
             const updatedProduct = {
               ...product,
-              // 🔥 COST FIELDS - Store the Uropa wholesale/cost price
               baseCost: uropaCost,
               costPrice: uropaCost,
               cost: uropaCost,
               basePrice: uropaCost,
-              // 🔥 SELLING PRICE FIELDS - Store the calculated selling price (with markup)
-              price: pricingResult.sellingPrice,  // ← Main price field (SELLING price, not cost!)
-              salePrice: pricingResult.sellingPrice,  // ← ProductCard checks this FIRST
+              price: pricingResult.sellingPrice,
+              salePrice: pricingResult.sellingPrice,
               sellingPrice: pricingResult.sellingPrice,
               sellPrice: pricingResult.sellingPrice,
               calculatedPrice: pricingResult.sellingPrice,
-              // Pricing metadata
               markup: pricingResult.markup,
               markupPercent: pricingResult.markupPercent,
               marginPercent: pricingResult.marginPercent,
               tierLabel: pricingResult.tierLabel,
-              // Timestamps
+              inStock: uropaInStock,
+              backOrderAvailable: uropaBackOrderAvailable,
+              uropaPromisedDate,
               lastPriceUpdate: new Date().toISOString(),
               lastSyncedWithUropa: new Date().toISOString(),
             };
@@ -384,6 +415,123 @@ priceSync.post('/run', async (c) => {
       error: error.message,
       log: syncLog,
     }, 500);
+  }
+});
+
+// ============================================
+// POST /price-sync/run-batch — cron batch endpoint (200 products per call)
+// ============================================
+priceSync.post('/run-batch', async (c) => {
+  const startTime = Date.now();
+  const BATCH_SIZE = 20;
+
+  try {
+    const token = await getToken();
+    const pricingConfig = await getPricingConfig();
+    const { createClient } = await import('npm:@supabase/supabase-js');
+    const kvSupabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
+
+    const currentOffset = (await kv.get('price-sync:batch-offset')) || 0;
+
+    const { count } = await kvSupabase
+      .from('kv_store_577b3f26')
+      .select('key', { count: 'exact', head: true })
+      .like('key', 'products:%');
+
+    const total = count || 0;
+    const offset = currentOffset >= total ? 0 : currentOffset;
+
+    const { data: batch, error } = await kvSupabase
+      .from('kv_store_577b3f26')
+      .select('key, value')
+      .like('key', 'products:%')
+      .range(offset, offset + BATCH_SIZE - 1);
+
+    if (error) throw new Error(`KV fetch error: ${error.message}`);
+    if (!batch || batch.length === 0) {
+      await kv.set('price-sync:batch-offset', 0);
+      return c.json({ success: true, message: 'No products in batch, reset offset', offset: 0 });
+    }
+
+    let updated = 0, skipped = 0, errors = 0, pricesChanged = 0;
+    const skipReasons: Record<string, number> = { noCode: 0, uropaNotFound: 0, noPrice: 0, invalidRow: 0 };
+
+    for (const row of batch) {
+      const product = row.value;
+      if (!product || typeof product !== 'object') { skipped++; skipReasons.invalidRow++; continue; }
+      const code = product.code || product.sku || product.productCode;
+      if (!code) { skipped++; skipReasons.noCode++; continue; }
+
+      try {
+        const response = await fetch(
+          `https://p1-api.nisbets.com.au/occ/v2/uropa-au/products/${code}?lang=en&curr=AUD&fields=FULL`,
+          { headers: { 'Authorization': token.toLowerCase().startsWith('bearer ') ? token : `Bearer ${token}`, 'Content-Type': 'application/json' } }
+        );
+        if (!response.ok) { skipped++; skipReasons.uropaNotFound++; continue; }
+
+        const uropaProduct = await response.json();
+
+        const uropaCost =
+          uropaProduct.priceDetail?.priceBreakdown?.[0]?.priceB ||
+          uropaProduct.priceDetail?.salesPrice ||
+          uropaProduct.priceDetail?.value ||
+          uropaProduct.priceDetail?.price ||
+          uropaProduct.price?.value ||
+          uropaProduct.basePrice?.value ||
+          uropaProduct.price || 0;
+
+        if (!uropaCost || Number(uropaCost) <= 0) { skipped++; skipReasons.noPrice++; continue; }
+
+        const pricingResult = calculateSellingPrice(Number(uropaCost), pricingConfig);
+
+        // Track if the selling price actually changed
+        const oldPrice = Number(product.price || 0);
+        const newPrice = pricingResult.sellingPrice;
+        if (Math.abs(oldPrice - newPrice) > 0.001) pricesChanged++;
+
+        // Extract availability info
+        const uropaStockStatus = uropaProduct.stock?.stockLevelStatus || uropaProduct.stockLevelStatus;
+        const uropaInStock = uropaStockStatus === 'inStock';
+        const uropaBackOrderAvailable = uropaProduct.stock?.backorderAvailable || uropaProduct.backorderAvailable || false;
+        const uropaAvailabilityMessage = uropaProduct.availabilityMessage?.message || null;
+        const uropaPromisedDate = uropaProduct.availabilityMessage?.promisedDate ||
+          (uropaAvailabilityMessage?.match(/\d{2}\/\d{2}\/\d{2,4}/)?.[0]) || null;
+
+        const updatedProduct = {
+          ...product,
+          baseCost: Number(uropaCost),
+          costPrice: Number(uropaCost),
+          tradePrice: Number(uropaCost),
+          price: pricingResult.sellingPrice,
+          sellingPrice: pricingResult.sellingPrice,
+          markup: pricingResult.markup,
+          markupPercent: pricingResult.markupPercent,
+          inStock: uropaInStock,
+          backOrderAvailable: uropaBackOrderAvailable,
+          uropaPromisedDate,
+          lastPriceUpdate: new Date().toISOString(),
+        };
+
+        await kv.set(row.key, updatedProduct);
+        updated++;
+      } catch {
+        errors++;
+      }
+    }
+
+    const nextOffset = offset + BATCH_SIZE >= total ? 0 : offset + BATCH_SIZE;
+    await kv.set('price-sync:batch-offset', nextOffset);
+
+    const stats = { updated, skipped, skipReasons, errors, pricesChanged, batchSize: batch.length, offset, nextOffset, total, durationMs: Date.now() - startTime, timestamp: new Date().toISOString() };
+    await kv.set('price-sync:last-batch', stats);
+
+    return c.json({ success: true, ...stats });
+  } catch (error: any) {
+    console.error('❌ [price-sync/run-batch]', error);
+    return c.json({ success: false, error: error.message }, 500);
   }
 });
 
@@ -522,9 +670,7 @@ priceSync.post('/test', async (c) => {
     
     const results: any[] = [];
 
-    // ✅ PERFORMANCE FIX: Fetch all products ONCE before the loop
-    const allProducts = await kv.getByPrefix('products:');
-    console.log(`📦 [Price Sync Test] Loaded ${allProducts.length} products from database`);
+    console.log(`📦 [Price Sync Test] Will look up ${productCodes.length} products individually`);
 
     // Fetch products from Uropa individually (no bulk endpoint available)
     console.log(`🌐 [Price Sync Test] Fetching ${productCodes.length} products from Uropa...`);
@@ -558,13 +704,9 @@ priceSync.post('/test', async (c) => {
     // Process each requested code
     for (const code of productCodes) {
       try {
-        // Get from database - search by multiple fields
-        const dbProduct = allProducts.find((p: any) => 
-          p.code === code || 
-          p.productCode === code || 
-          p.sku === code ||
-          p.id === code
-        );
+        // Get from database by code
+        const dbProductFound = await kv.findProductByCode(code);
+        const dbProduct = dbProductFound?.value;
 
         if (!dbProduct) {
           results.push({
@@ -719,32 +861,22 @@ priceSync.post('/test-and-update', async (c) => {
     const results: any[] = [];
     let pricesUpdated = 0;
 
-    // 🔥 STEP 1: Get all products from database
-    console.log('📦 [Auto-Update] Step 1: Fetching products from database...');
-    const allProducts = await kv.getByPrefix('products:');
-    console.log(`✅ [Auto-Update] Found ${allProducts.length} total products in database`);
-    
-    // 🔥 STEP 2: Filter to products matching the codes
+    // 🔥 STEP 1: Fetch each requested product directly by code — no full table load
+    console.log(`📦 [Auto-Update] Looking up ${productCodes.length} products...`);
     const dbProductsMap = new Map();
-    
-    // 🐛 DEBUG: Log what we're searching for
-    console.log(`🔍 [Auto-Update] Searching for codes:`, productCodes.map(c => c.toLowerCase()));
-    
-    for (const product of allProducts) {
-      const productIdentifier = product.productCode || product.code || product.sku || product.id;
-      const normalizedId = productIdentifier?.toLowerCase();
-      
-      // 🐛 DEBUG: Log each product check
-      const isMatch = productCodes.some(code => code.toLowerCase() === normalizedId);
-      
-      if (isMatch) {
-        dbProductsMap.set(normalizedId, product);
-        console.log(`✅ [Auto-Update] Matched: ${productIdentifier} (${normalizedId})`);
+
+    for (const code of productCodes) {
+      const found = await kv.findProductByCode(code);
+      if (found) {
+        dbProductsMap.set(code.toLowerCase(), found.value);
+        console.log(`✅ [Auto-Update] Found: ${code}`);
+      } else {
+        console.log(`⚠️ [Auto-Update] Not found: ${code}`);
       }
     }
-    
-    console.log(`✅ [Auto-Update] Found ${dbProductsMap.size} products matching codes (requested: ${productCodes.length})`);
-    
+
+    console.log(`✅ [Auto-Update] Found ${dbProductsMap.size}/${productCodes.length} products`);
+
     if (dbProductsMap.size === 0) {
       return c.json({
         success: false,
@@ -752,8 +884,8 @@ priceSync.post('/test-and-update', async (c) => {
         results: []
       });
     }
-    
-    // 🔥 STEP 3: Filter to products WITH cost prices
+
+    // 🔥 STEP 2: Filter to products WITH cost prices
     const productsWithCost = Array.from(dbProductsMap.values()).filter((p: any) => {
       const costPrice = parseFloat(p.basePrice || p.costPrice || p.baseCost || 0);
       return costPrice > 0;
@@ -1065,8 +1197,9 @@ priceSync.post('/test-and-update', async (c) => {
 // ============================================
 priceSync.get('/debug', async (c) => {
   try {
-    const allProducts = await kv.getByPrefix('products:');
-    
+    const total = await kv.countByPrefix('products:');
+    const allProducts = await kv.getByPrefixPaged('products:', 0, 5);
+
     if (allProducts.length === 0) {
       return c.json({
         success: false,
@@ -1091,7 +1224,7 @@ priceSync.get('/debug', async (c) => {
 
     return c.json({
       success: true,
-      totalProducts: allProducts.length,
+      totalProducts: total,
       sampleProducts,
       message: 'Check the sampleProducts to see what fields your products have',
     });
@@ -1256,11 +1389,14 @@ priceSync.get('/list-products', async (c) => {
     const search = url.searchParams.get('search') || '';
     const brand = url.searchParams.get('brand') || '';
     
-    // Get ALL product keys first
-    const allProductKeys = await kv.getByPrefix('products:');
-    
-    // Extract and filter products
-    let products = allProductKeys.map(p => ({
+    // Paginate directly from DB — no full load into memory
+    const offset = (page - 1) * limit;
+    const [totalProducts, pagePage] = await Promise.all([
+      kv.countByPrefix('products:'),
+      kv.getByPrefixPaged('products:', offset, limit),
+    ]);
+
+    let products = pagePage.map((p: any) => ({
       code: p.code || p.productCode || p.sku || p.id || '',
       name: p.name || p.productName || 'Unknown',
       brand: p.brand || p.brandName || 'Unknown',
@@ -1268,37 +1404,25 @@ priceSync.get('/list-products', async (c) => {
       sellingPrice: p.price || p.sellingPrice || p.sellPrice || 0,
       markupPercent: p.markupPercent || 0,
       tradePrice: p.tradePrice || p.baseCost || p.costPrice || 0,
-    })).filter(p => p.code);
-    
-    // Apply search filter
+    })).filter((p: any) => p.code);
+
     if (search) {
       const searchLower = search.toLowerCase();
-      products = products.filter(p => 
-        p.code.toLowerCase().includes(searchLower) || 
+      products = products.filter((p: any) =>
+        p.code.toLowerCase().includes(searchLower) ||
         p.name.toLowerCase().includes(searchLower)
       );
     }
-    
-    // Apply brand filter
     if (brand) {
-      products = products.filter(p => p.brand === brand);
+      products = products.filter((p: any) => p.brand === brand);
     }
-    
-    // Get unique brands
-    const uniqueBrands = Array.from(new Set(allProductKeys.map(p => p.brand || p.brandName || 'Unknown'))).sort();
-    
-    // Paginate
-    const totalProducts = products.length;
+
     const totalPages = Math.ceil(totalProducts / limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedProducts = products.slice(startIndex, endIndex);
-    
-    console.log(`✅ [List Products] Returning ${paginatedProducts.length} of ${totalProducts} products (page ${page}/${totalPages})`);
-    
+    console.log(`✅ [List Products] Returning ${products.length} products (page ${page}/${totalPages})`);
+
     return c.json({
       success: true,
-      products: paginatedProducts,
+      products,
       pagination: {
         page,
         limit,
@@ -1306,7 +1430,7 @@ priceSync.get('/list-products', async (c) => {
         totalPages,
         hasMore: page < totalPages
       },
-      brands: uniqueBrands
+      brands: []
     });
   } catch (error: any) {
     console.error('❌ [List Products] Error:', error);
@@ -1339,21 +1463,15 @@ priceSync.post('/manual-update-cost', async (c) => {
 
     console.log(`🔧 [Manual Update] Changing cost for ${productCode} to $${newCost}...`);
 
-    // Find the product
-    const allProducts = await kv.getByPrefix('products:');
-    const product = allProducts.find((p: any) => 
-      p.code === productCode || 
-      p.productCode === productCode || 
-      p.sku === productCode ||
-      p.id === productCode
-    );
-
-    if (!product) {
+    // Find the product without loading all products into memory
+    const found = await kv.findProductByCode(productCode);
+    if (!found) {
       return c.json({
         success: false,
         error: `Product ${productCode} not found in database`,
       }, 404);
     }
+    const product = found.value;
 
     // Store old values for comparison
     const oldCost = parseFloat(
@@ -1479,19 +1597,16 @@ priceSync.post('/query-product', async (c) => {
       return c.json({ success: false, error: 'Product code is required' }, 400);
     }
 
-    // Find product by code
-    const allProducts = await kv.getByPrefix('products:');
-    console.log(`🔍 [Query Product] Found ${allProducts.length} products in database`);
-
-    const product = allProducts.find(p => p && p.code === productCode);
-    
-    if (!product) {
+    // Find product by code without loading all products into memory
+    const found = await kv.findProductByCode(productCode);
+    if (!found) {
       console.log(`🔍 [Query Product] Product ${productCode} not found`);
-      return c.json({ 
-        success: false, 
-        error: `Product ${productCode} not found in database` 
+      return c.json({
+        success: false,
+        error: `Product ${productCode} not found in database`
       }, 404);
     }
+    const product = found.value;
 
     console.log('✅ [Query Product] Found in database!');
 
@@ -1762,20 +1877,8 @@ priceSync.post('/query-bulk-products', async (c) => {
       }
     };
 
-    // Fetch all products from database
-    const allProducts = await kv.getByPrefix('products:');
-    console.log(`🔍 [Bulk Query] Loaded ${allProducts.length} products from database`);
-    
-    // Debug: Show sample product fields
-    if (allProducts.length > 0) {
-      const sampleKeys = Object.keys(allProducts[0]).filter(k => 
-        k.toLowerCase().includes('code') || k === 'sku' || k === 'id'
-      );
-      console.log(`🔍 [Bulk Query] Sample product ID fields:`, sampleKeys);
-    }
-    
     const results = [];
-    
+
     // Get token once before the loop
     let token = null;
     try {
@@ -1784,28 +1887,20 @@ priceSync.post('/query-bulk-products', async (c) => {
       console.warn('⚠️ [Bulk Query] Could not get Uropa token:', tokenError);
     }
 
-    // 🔥 FIX: Process products in smaller batches to prevent timeout
+    // Fetch each requested product directly by code — no full table load
     const BATCH_SIZE = 10;
     for (let i = 0; i < productCodes.length; i += BATCH_SIZE) {
       const batch = productCodes.slice(i, i + BATCH_SIZE);
       console.log(`🔄 [Bulk Query] Processing batch ${Math.floor(i/BATCH_SIZE) + 1}/${Math.ceil(productCodes.length/BATCH_SIZE)} (${batch.length} products)...`);
-      
-      // Process batch in parallel
+
       const batchResults = await Promise.allSettled(
         batch.map(async (code) => {
           try {
             const trimmedCode = code.trim().toUpperCase();
             console.log(`🔍 [Bulk Query] Looking for: "${trimmedCode}"`);
-            
-            // Find product in database - try multiple field variations
-            const product = allProducts.find((p: any) => {
-              const matches = 
-                (p.code && p.code.toString().trim().toUpperCase() === trimmedCode) ||
-                (p.productCode && p.productCode.toString().trim().toUpperCase() === trimmedCode) ||
-                (p.sku && p.sku.toString().trim().toUpperCase() === trimmedCode) ||
-                (p.id && p.id.toString().trim().toUpperCase() === trimmedCode);
-              return matches;
-            });
+
+            const found = await kv.findProductByCode(trimmedCode);
+            const product = found?.value;
 
             if (!product) {
               console.log(`❌ [Bulk Query] Not found: "${trimmedCode}"`);
@@ -2038,13 +2133,8 @@ priceSync.post('/bulk-update-costs', async (c) => {
 
     console.log(`⚡ [Bulk Update Costs] Updating ${updates.length} products...`);
 
-    // Fetch all products from database ONCE
-    const allProducts = await kv.getByPrefix('products:');
-    console.log(`📦 [Bulk Update Costs] Loaded ${allProducts.length} products from database`);
-
-    // Get pricing config ONCE before processing (avoid repeated calls)
+    // Get pricing config ONCE before processing
     const pricingConfig = await getPricingConfig();
-    console.log(`📐 [Bulk Update Costs] Loaded pricing config:`, pricingConfig);
 
     // Process in batches of 10 to prevent timeouts
     const BATCH_SIZE = 10;
@@ -2053,30 +2143,22 @@ priceSync.post('/bulk-update-costs', async (c) => {
       batches.push(updates.slice(i, i + BATCH_SIZE));
     }
 
-    console.log(`📊 [Bulk Update Costs] Processing ${batches.length} batches of up to ${BATCH_SIZE} products each`);
-
     const results: any[] = [];
     let successCount = 0;
     let failCount = 0;
 
-    // Process each batch
     for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
       const batch = batches[batchIndex];
-      console.log(`🔄 [Bulk Update Costs] Processing batch ${batchIndex + 1}/${batches.length} (${batch.length} products)...`);
+      console.log(`🔄 [Bulk Update Costs] Processing batch ${batchIndex + 1}/${batches.length}...`);
 
-      // Process products in parallel within the batch
       const batchResults = await Promise.allSettled(
         batch.map(async (update: { productCode: string; newCost: number; newDescription?: string }) => {
           try {
             const { productCode, newCost, newDescription } = update;
 
-            // Find the product in the pre-loaded array
-            const product = allProducts.find((p: any) =>
-              p.code === productCode ||
-              p.productCode === productCode ||
-              p.sku === productCode ||
-              p.id === productCode
-            );
+            // Find product directly by code — no full table load
+            const found = await kv.findProductByCode(productCode);
+            const product = found?.value;
 
             if (!product) {
               console.warn(`⚠️ [Bulk Update Costs] Product ${productCode} not found`);

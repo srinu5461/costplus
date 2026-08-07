@@ -2,10 +2,21 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router';
 import { ProductCard } from '../components/ProductCard';
 import { useCMS } from '../context/CMSContext';
+import { useCart } from '../context/CartContext';
 import { useProducts } from '../../hooks/useProducts';
+
+// Convert Supabase Storage URLs to WebP using image transformation API
+function toWebP(url: string, width?: number): string {
+  if (!url || !url.includes('supabase.co/storage')) return url;
+  const params = new URLSearchParams();
+  params.set('format', 'webp');
+  params.set('quality', '80');
+  if (width) params.set('width', String(width));
+  return `${url}?${params.toString()}`;
+}
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
-import { ChevronLeft, ChevronRight, ShieldCheck, Truck, CreditCard, HeadphonesIcon, Award, TrendingUp, ArrowRight, Phone, Mail, Search, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShieldCheck, Truck, CreditCard, HeadphonesIcon, Award, TrendingUp, ArrowRight, Phone, Mail, Search, X, ShoppingCart, Plus, Minus } from 'lucide-react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -17,6 +28,8 @@ import { updateSEOTags, homepageSEO } from '../utils/seo';
 import { SEOHead, generateOrganizationSchema, generateLocalBusinessSchema } from '../components/SEOHead';
 import { heroConfig } from '../../config/hero';
 import heroBannerImg from '../../imports/hero-banner.png';
+import { buildCategoryTree } from '../utils/categoryTree';
+import { categoryToSlug } from '../utils/slugify';
 
 // ⚡ CACHE KEYS
 const CACHE_KEY_HOMEPAGE = 'costplus100_homepage_data';
@@ -54,7 +67,77 @@ const setCachedData = (data: any) => {
   }
 };
 
+function MultiBuyCard({ product, onAddToCart }: { product: any; onAddToCart: (p: any, qty: number) => void }) {
+  const [qty, setQty] = useState(1);
+  const mbPrice = (product.sellingPrice || product.salePrice || product.price) ?? 0;
+  const mbOption = product.multiBuyOptions?.[1];
+  // pick best multibuy tier for current qty
+  const tiers: any[] = product.multiBuyOptions || [];
+  const activeTier = [...tiers].reverse().find((t: any) => qty >= t.quantity);
+  const effectivePrice = activeTier ? activeTier.price : mbPrice;
+
+  return (
+    <div className="group bg-white rounded-xl border border-slate-200 hover:border-yellow-400 hover:shadow-md transition-all overflow-hidden flex flex-col">
+      {/* Image */}
+      <Link to={`/products/${product.id}`} className="block relative aspect-square bg-slate-50 overflow-hidden">
+        {(product.mainImageUrl || product.image) ? (
+          <img src={product.mainImageUrl || product.image} alt={product.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 p-2" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-slate-300 text-xs">No image</div>
+        )}
+        <div className="absolute top-2 left-2 bg-yellow-400 text-slate-900 text-xs font-bold px-2 py-0.5 rounded-full">Multi-buy</div>
+        {(product.brandLogo || product.brandLogoUrl) && (
+          <img src={product.brandLogo || product.brandLogoUrl} alt={product.brand} className="absolute bottom-1 right-1 h-5 object-contain bg-white/90 rounded px-1 shadow-sm" />
+        )}
+      </Link>
+
+      {/* Info */}
+      <div className="p-3 flex flex-col gap-1.5 flex-1">
+        <Link to={`/products/${product.id}`}>
+          <p className="text-sm font-semibold text-slate-800 leading-snug line-clamp-2 hover:text-[#E31837] transition-colors">{product.name}</p>
+        </Link>
+        {product.code && (
+          <p className="text-xs text-slate-500">Code: <span className="font-semibold text-slate-700">{product.code}</span></p>
+        )}
+
+        {/* Price */}
+        <div className="mt-auto pt-1">
+          <div className="flex items-baseline gap-1">
+            <span className="text-base font-bold text-[#E31837]">${effectivePrice.toFixed(2)}</span>
+            <span className="text-xs text-slate-400">ex GST</span>
+          </div>
+          {mbOption && (
+            <p className="text-xs text-green-700 font-bold bg-green-50 border border-green-100 rounded px-1.5 py-0.5 mt-0.5 inline-block">
+              {mbOption.quantity}+ packs @ ${mbOption.price?.toFixed(2)} each
+            </p>
+          )}
+        </div>
+
+        {/* Quantity + Add to Cart */}
+        <div className="flex items-center gap-1.5 mt-1">
+          <div className="flex items-center border border-slate-300 rounded-lg overflow-hidden">
+            <button onClick={() => setQty(q => Math.max(1, q - 1))} className="px-2 py-1.5 hover:bg-slate-100 transition-colors text-slate-600">
+              <Minus className="size-3" />
+            </button>
+            <span className="px-2 py-1 text-xs font-bold text-slate-800 min-w-[24px] text-center">{qty}</span>
+            <button onClick={() => setQty(q => q + 1)} className="px-2 py-1.5 hover:bg-slate-100 transition-colors text-slate-600">
+              <Plus className="size-3" />
+            </button>
+          </div>
+          <button
+            onClick={() => onAddToCart(product, qty)}
+            className="flex-1 flex items-center justify-center gap-1 bg-[#2D3748] hover:bg-[#E31837] text-white text-xs font-bold py-1.5 rounded-lg transition-colors"
+          >
+            <ShoppingCart className="size-3.5" /> Add
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 let renderCount = 0;
+let featuredLoaded = false; // module-level flag: prevent re-fetching featured IDs on navigation back
 
 export function Home() {
   renderCount++;
@@ -80,6 +163,7 @@ export function Home() {
 
   // ⚡ Load products from CDN (already cached by React Query)
   const { data: productsFromCDN, isLoading: productsLoading } = useProducts();
+  const { addToCart } = useCart();
   const products = productsFromCDN || [];
 
   // Use categories from CMSContext
@@ -154,14 +238,7 @@ export function Home() {
   const [popularProducts, setPopularProductsRaw] = useState<any[]>([]);
   const [promotionalProducts, setPromotionalProductsRaw] = useState<any[]>([]);
   const [forceRenderKey, setForceRenderKey] = useState(0);
-  const [showCallPopup, setShowCallPopup] = useState(() => {
-    const seen = sessionStorage.getItem('costplus_popup_seen');
-    if (!seen) {
-      sessionStorage.setItem('costplus_popup_seen', '1');
-      return true;
-    }
-    return false;
-  });
+  const [showCallPopup, setShowCallPopup] = useState(false);
 
   // Wrap setters to log every state change
   const setFeaturedProducts = (data: any[]) => {
@@ -187,7 +264,7 @@ export function Home() {
   // ⚡ LOAD BANNERS: Always start empty, load from server
   const [banners, setBanners] = useState<any[]>([]);
   const [bannersLoaded, setBannersLoaded] = useState(false);
-  const [sectionsLoaded, setSectionsLoaded] = useState(true); // Start as true to show content immediately
+  const [sectionsLoaded, setSectionsLoaded] = useState(false);
   const [sectionsConfig, setSectionsConfig] = useState<any[]>([]);
 
   // ⚡ STATIC HERO: Use as fallback only when no banners
@@ -202,6 +279,49 @@ export function Home() {
 
   // ✅ REMOVED: Don't show cached banners immediately - always load fresh from server
   // This ensures static banner shows first while carousel loads
+
+  // ⚡ Load featured product IDs from dedicated CDN file, but use CDN chunk product
+  // data for prices so they stay in sync with sync-products (not sync-featured).
+  useEffect(() => {
+    // Only run once per browser session — prevents re-fetch on navigation back causing product flicker
+    if (featuredLoaded) return;
+
+    const loadFeaturedFromCDN = async () => {
+      try {
+        const urlRes = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/make-server-d1fbc049/featured-url`,
+          { headers: { 'Authorization': `Bearer ${publicAnonKey}` } }
+        );
+        if (!urlRes.ok) return;
+        const { url } = await urlRes.json();
+        if (!url) return;
+
+        const dataRes = await fetch(url, { cache: 'no-store' });
+        if (!dataRes.ok) return;
+        const data = await dataRes.json();
+
+        if (data.products && data.products.length > 0) {
+          // Use CDN chunk products for pricing (fresh after sync-products),
+          // falling back to featured-products.json only if chunks not loaded yet.
+          const sourceProducts = products.length > 0 ? products : data.products;
+
+          const featured = sourceProducts.filter((p: any) => data.featuredIds?.includes(p.code) || data.featuredIds?.includes(p.id));
+          const popular = sourceProducts.filter((p: any) => data.popularIds?.includes(p.code) || data.popularIds?.includes(p.id));
+          const promo = sourceProducts.filter((p: any) => data.promoIds?.includes(p.code) || data.promoIds?.includes(p.id));
+
+          if (featured.length > 0) setFeaturedProducts(featured);
+          if (popular.length > 0) setPopularProducts(popular);
+          if (promo.length > 0) setPromotionalProducts(promo);
+          setSectionsLoaded(true);
+          featuredLoaded = true;
+          console.log(`⚡ [Featured CDN] Loaded ${featured.length} featured products (source: ${products.length > 0 ? 'CDN chunks' : 'featured-products.json'})`);
+        }
+      } catch (e) {
+        // Silently fall through to full product load
+      }
+    };
+    loadFeaturedFromCDN();
+  }, [products.length]);
 
   // Fetch featured sections when products are loaded
   useEffect(() => {
@@ -443,7 +563,16 @@ export function Home() {
   const popularTotalPages = Math.ceil(popularProducts.length / PRODUCTS_PER_PAGE);
   const promotionTotalPages = Math.ceil(promotionalProducts.length / PRODUCTS_PER_PAGE);
 
+  // Multi-buy products — those with at least 2 price tiers
+  const multiBuyProducts = useMemo(() => {
+    return products
+      .filter((p: any) => p.multiBuyOptions && p.multiBuyOptions.length >= 2)
+      .slice(0, 8);
+  }, [products]);
+
   // Extract unique brands from products with their logos from database
+  const fullCategoryTree = useMemo(() => buildCategoryTree(data?.categoryTree || []), [data?.categoryTree]);
+
   const brands = useMemo(() => {
     const brandMap = new Map<string, { name: string; logoUrl: string }>();
     
@@ -492,13 +621,24 @@ export function Home() {
 
   // Product Card Skeleton Component
   const ProductCardSkeleton = () => (
-    <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-      <div className="aspect-square bg-slate-200 animate-pulse"></div>
-      <div className="p-4 space-y-3">
-        <div className="h-4 bg-slate-200 rounded animate-pulse w-3/4"></div>
-        <div className="h-3 bg-slate-200 rounded animate-pulse w-1/2"></div>
-        <div className="h-6 bg-slate-200 rounded animate-pulse w-1/3"></div>
-        <div className="h-10 bg-slate-200 rounded animate-pulse"></div>
+    <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-sm">
+      {/* Image area */}
+      <div className="aspect-square relative overflow-hidden bg-slate-100">
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 animate-[shimmer_1.5s_infinite]" style={{ backgroundSize: '200% 100%' }} />
+      </div>
+      {/* Content area */}
+      <div className="p-3 space-y-2.5">
+        {/* Brand badge */}
+        <div className="h-3 w-16 bg-slate-200 rounded-full animate-pulse" />
+        {/* Product name — two lines */}
+        <div className="space-y-1.5">
+          <div className="h-4 bg-slate-200 rounded animate-pulse w-full" />
+          <div className="h-4 bg-slate-200 rounded animate-pulse w-3/4" />
+        </div>
+        {/* Price */}
+        <div className="h-6 bg-slate-200 rounded animate-pulse w-1/3" />
+        {/* Add to cart button */}
+        <div className="h-9 bg-slate-200 rounded-lg animate-pulse w-full" />
       </div>
     </div>
   );
@@ -513,6 +653,7 @@ export function Home() {
 
   return (
     <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden">
+      <h1 className="sr-only">Catering Equipment &amp; Commercial Kitchen Supplies Australia | Cost Plus 100</h1>
       {/* SEO Meta Tags and Structured Data for Homepage */}
       <SEOHead
         title="CostPlus Catering Equipment - Professional Kitchen Equipment Australia"
@@ -564,392 +705,162 @@ export function Home() {
         </div>
       )}
       
-      {/* ⚡ STATIC HERO BANNER: Show initially while banners load, or if no banners exist */}
-      {/* ⚡ STATIC HERO BANNER: Show initially while banners load, or if no banners exist */}
-{(!bannersLoaded || activeBanners.length === 0) && (
-  <section className="bg-slate-100 py-4 w-full" data-banner-type="static">
-    <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-      <div className="relative overflow-hidden bg-slate-100 rounded-lg h-[200px] sm:h-[300px] md:h-[350px] lg:h-[450px] xl:h-[500px]">
-        <img
-          src={heroBannerImg}
-          alt="Catering Equipment for Sydney, Melbourne and Brisbane"
-          className="w-full h-full object-cover object-center"
-          onLoad={() => console.log('✅ Static banner image loaded successfully')}
-          onError={(e) => console.error('❌ Static banner image failed to load', e)}
-        />
-      </div>
-    </div>
-  </section>
-)}
+      {/* ── HERO: Sidebar + Right Column ── */}
+      <div className="max-w-7xl mx-auto px-4 lg:px-6 py-4 w-full overflow-hidden">
+        <div className="flex gap-3 items-start min-w-0">
 
-{/* Banner Carousel with Thumbnails - Only show when banners are loaded and valid */}
-{bannersLoaded && activeBanners.length > 0 && (
-  <section className="bg-slate-100 py-4 w-full" data-banner-type="carousel">
-    <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-      {/* Main Banner */}
-      <div className="relative banner-carousel mb-4 overflow-hidden">
-        <Slider 
-          ref={sliderRef} 
-          {...carouselSettings}
-          beforeChange={(current, next) => setCurrentSlide(next)}
-        >
-          {activeBanners.map((slide, index) => (
-            <div key={index} className="outline-none">
-              {/* 📍 FIX: Changed outer div to a Link so the whole banner is clickable */}
-              <Link
-                to={slide.link || '/products'}
-                className="block relative overflow-hidden rounded-lg bg-slate-100 h-[200px] sm:h-[300px] md:h-[350px] lg:h-[450px] xl:h-[500px] cursor-pointer group"
-              >
-                {/* Full Banner Image */}
-                <ImageWithFallback
-                  src={slide.image}
-                  alt={slide.title}
-                  className="w-full h-full object-contain sm:object-cover object-center transition-transform duration-300 group-hover:scale-[1.01]"
-                />
-                
-                {/* Subtle dark overlay effect on hover to show clickability */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-300 pointer-events-none" />
-              </Link>
+          {/* ── LEFT: Category Sidebar ── */}
+          <div className="hidden lg:flex flex-col w-64 flex-shrink-0 bg-white rounded-lg border border-slate-200 overflow-hidden" style={{ minHeight: 360 }}>
+            {/* Header */}
+            <div className="bg-[#2D3748] text-white px-3 py-2 flex items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider">All Categories</span>
             </div>
-          ))}
-        </Slider>
-      </div>
-
-            {/* Thumbnail Navigation - Nisbets Style - Hidden on Mobile */}
-            {activeBanners.length > 1 && (
-              <div className="relative max-w-4xl mx-auto hidden md:block">
-                {/* Left Arrow */}
-                <button
-                  onClick={() => sliderRef.current?.slickPrev()}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-slate-100 text-[#2D3748] rounded-full p-1.5 shadow-md transition-all"
-                >
-                  <ChevronLeft className="size-4" />
-                </button>
-
-                {/* Thumbnails - Auto-adjust width based on number of banners */}
-                <div className="flex gap-2 mx-10 justify-center overflow-hidden">
-                  {activeBanners.map((slide, index) => (
-                    <button
-                      key={index}
-                      onClick={() => sliderRef.current?.slickGoTo(index)}
-                      className={`relative rounded overflow-hidden transition-all flex-shrink-0 ${
-                        currentSlide === index
-                          ? 'ring-2 ring-[#E31837] scale-105'
-                          : 'opacity-60 hover:opacity-100'
-                      }`}
-                      style={{ width: `${Math.min(180, Math.floor(700 / activeBanners.length))}px` }}
+            {/* Category Tree */}
+            <div className="flex-1 overflow-y-auto">
+              {fullCategoryTree.filter((cat: any) => cat.enabled !== false).map((cat: any) => (
+                <div key={cat.fullPath || cat.name} className="border-b border-slate-100">
+                  <Link
+                    to={cat.fullPath ? `/products/c/${categoryToSlug(cat.fullPath)}` : `/products?category=${encodeURIComponent(cat.name)}`}
+                    className="flex items-center justify-between px-3 py-2 hover:bg-[#E31837] hover:text-white transition-colors text-base font-bold text-slate-800 group"
+                  >
+                    <span className="leading-tight">{cat.name}</span>
+                    {cat.children?.length > 0 && <ChevronRight className="size-3 text-slate-400 flex-shrink-0 group-hover:text-white" />}
+                  </Link>
+                  {cat.children?.filter((s: any) => s.enabled !== false).slice(0, 6).map((sub: any) => (
+                    <Link
+                      key={sub.fullPath || sub.name}
+                      to={sub.fullPath ? `/products/c/${categoryToSlug(sub.fullPath)}` : `/products?category=${encodeURIComponent(sub.name)}`}
+                      className="flex items-center gap-1 pl-5 pr-3 py-1 text-sm text-slate-600 hover:text-[#E31837] hover:bg-slate-50 transition-colors truncate"
                     >
-                      <div className="aspect-[16/9] bg-slate-200 overflow-hidden">
-                        <img
-                          src={slide.image}
+                      <span className="text-slate-300 mr-0.5">›</span>{sub.name}
+                    </Link>
+                  ))}
+                  {cat.children?.length > 6 && (
+                    <Link
+                      to={cat.fullPath ? `/products/c/${categoryToSlug(cat.fullPath)}` : `/products?category=${encodeURIComponent(cat.name)}`}
+                      className="block pl-5 pr-3 py-1 text-xs text-[#E31837] hover:underline"
+                    >
+                      +{cat.children.length - 6} more →
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </div>
+            {/* Sidebar Footer: Shipping + Payment */}
+            <div className="border-t border-slate-200 px-3 pt-2 pb-3 bg-slate-50">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Shipping Partners</p>
+              <div className="flex flex-col gap-1.5 mb-2">
+                {/* COPE Sensitive Freight */}
+                <div className="flex items-center gap-2 bg-white border border-slate-200 rounded px-3 py-2">
+                  <div className="flex items-center gap-0.5">
+                    <span className="bg-red-600 text-white text-xs font-black px-1.5 py-1 tracking-widest">C</span>
+                    <span className="bg-red-600 text-white text-xs font-black px-1.5 py-1 tracking-widest">O</span>
+                    <span className="bg-red-600 text-white text-xs font-black px-1.5 py-1 tracking-widest">P</span>
+                    <span className="bg-red-600 text-white text-xs font-black px-1.5 py-1 tracking-widest">E</span>
+                  </div>
+                  <span className="text-xs font-bold text-slate-700 leading-tight">Sensitive<br/>Freight</span>
+                </div>
+                {/* StarTrack */}
+                <div className="flex items-center gap-2 bg-white border border-slate-200 rounded px-3 py-2">
+                  <div className="bg-red-600 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+                    <div className="bg-white rounded-full w-2.5 h-2.5" />
+                  </div>
+                  <span className="text-sm font-black text-slate-800 tracking-tight"><span className="text-slate-700">STAR</span><span className="text-blue-500">TRACK</span></span>
+                </div>
+              </div>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">We Accept</p>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Visa_Logo.png/120px-Visa_Logo.png" alt="Visa" className="h-6 object-contain bg-white border border-slate-200 rounded px-1" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/120px-Mastercard-logo.svg.png" alt="Mastercard" className="h-6 object-contain bg-white border border-slate-200 rounded px-1" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/American_Express_logo.svg/120px-American_Express_logo.svg.png" alt="Amex" className="h-6 object-contain bg-white border border-slate-200 rounded px-1" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/120px-Google_Pay_Logo.svg.png" alt="Google Pay" className="h-6 object-contain bg-white border border-slate-200 rounded px-1" />
+              </div>
+            </div>
+          </div>
+
+          {/* ── RIGHT: Banner + Featured + Multibuy ── */}
+          <div className="flex-1 min-w-0 flex flex-col gap-4">
+
+            {/* Banner */}
+            {(!bannersLoaded || activeBanners.length === 0) && (
+              <div className="relative overflow-hidden bg-slate-100 rounded-lg h-[220px] sm:h-[300px] md:h-[360px]" data-banner-type="static">
+                <img
+                  src={heroBannerImg}
+                  alt="Catering Equipment for Sydney, Melbourne and Brisbane"
+                  className="w-full h-full object-cover object-center"
+                  fetchPriority="high"
+                  loading="eager"
+                />
+              </div>
+            )}
+
+{/* Banner Carousel - Only show when banners are loaded and valid */}
+            {bannersLoaded && activeBanners.length > 0 && (
+              <div className="relative rounded-lg overflow-hidden h-[220px] sm:h-[300px] md:h-[360px]" data-banner-type="carousel">
+                <Slider
+                  ref={sliderRef}
+                  {...carouselSettings}
+                  beforeChange={(current, next) => setCurrentSlide(next)}
+                >
+                  {activeBanners.map((slide, index) => (
+                    <div key={index} className="outline-none">
+                      <Link
+                        to={slide.link || '/products'}
+                        className="block relative overflow-hidden rounded-lg bg-slate-100 h-[220px] sm:h-[300px] md:h-[360px] cursor-pointer group"
+                      >
+                        <ImageWithFallback
+                          src={toWebP(slide.image, 1200)}
                           alt={slide.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain md:object-cover object-center transition-transform duration-300 group-hover:scale-[1.01]"
                         />
-                        {currentSlide === index && (
-                          <div className="absolute inset-0 bg-[#E31837]/10"></div>
-                        )}
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1">
-                        <p className="text-white text-[10px] font-medium truncate">{slide.title}</p>
-                      </div>
-                    </button>
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-300 pointer-events-none" />
+                      </Link>
+                    </div>
+                  ))}
+                </Slider>
+              </div>
+            )}
+
+            {/* Featured Products */}
+            {isFullyLoading ? (
+              <div className="bg-white rounded-lg p-4 border border-slate-200">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {[...Array(8)].map((_, i) => <ProductCardSkeleton key={i} />)}
+                </div>
+              </div>
+            ) : displayFeaturedProducts.length > 0 ? (
+              <div key={`featured-${forceRenderKey}`} className="bg-white rounded-lg p-4 border border-slate-200">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-xl font-bold text-[#2D3748]">{getSectionConfig('featured')?.name || 'Featured Equipment'}</h2>
+                  <Link to="/products?section=featured" className="text-sm text-[#E31837] hover:underline font-semibold flex items-center gap-1">View All <ArrowRight className="size-3" /></Link>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {displayFeaturedProducts.slice(0, 8).map((product, index) => (
+                    <ProductCard key={`${product.id}-${forceRenderKey}`} product={product} priority={index < 4} />
                   ))}
                 </div>
-
-                {/* Right Arrow */}
-                <button
-                  onClick={() => sliderRef.current?.slickNext()}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-slate-100 text-[#2D3748] rounded-full p-1.5 shadow-md transition-all"
-                >
-                  <ChevronRight className="size-4" />
-                </button>
               </div>
-            )}
-          </div>
-        </section>
-      )}
-      
-      {/* Featured Products */}
-      {!isFullyLoading && displayFeaturedProducts.length > 0 && (
-        <section key={`featured-${forceRenderKey}`} className="py-4 md:py-8 bg-white">
-          <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-            <div className="text-center mb-4 md:mb-6">
-              <h2 className="text-2xl md:text-3xl lg:text-4xl mb-1 font-bold">
-                {getSectionConfig('featured')?.name || 'Featured Equipment'}
-              </h2>
-              <p className="text-muted-foreground text-sm md:text-base">
-                {getSectionConfig('featured')?.description || 'Top picks from our extensive catalog'}
-              </p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-3 sm:gap-4">
-              {displayFeaturedProducts.map((product, index) => (
-                <ProductCard key={`${product.id}-${forceRenderKey}`} product={product} priority={index < 4} />
-              ))}
-            </div>
+            ) : null}
 
-            {/* Pagination Controls */}
-            {featuredTotalPages > 1 && (
-              <div className="flex items-center justify-center gap-4 mt-6">
-                <Button
-                  onClick={() => setFeaturedPage(Math.max(0, featuredPage - 1))}
-                  disabled={featuredPage === 0}
-                  variant="outline"
-                  className="flex items-center gap-2"
-                >
-                  <ChevronLeft className="size-4" />
-                  Previous
-                </Button>
-                <span className="text-sm font-medium">
-                  Page {featuredPage + 1} of {featuredTotalPages}
-                </span>
-                <Button
-                  onClick={() => setFeaturedPage(Math.min(featuredTotalPages - 1, featuredPage + 1))}
-                  disabled={featuredPage >= featuredTotalPages - 1}
-                  variant="outline"
-                  className="flex items-center gap-2"
-                >
-                  Next
-                  <ChevronRight className="size-4" />
-                </Button>
+            {/* Multi-buy Deals */}
+            {multiBuyProducts.length > 0 && (
+              <div className="bg-white rounded-lg p-4 border border-slate-200">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-xl font-bold text-[#2D3748]">Multi-buy Deals</h2>
+                  <Link to="/products?multibuy=true" className="text-sm text-[#E31837] hover:underline font-semibold flex items-center gap-1">View All <ArrowRight className="size-3" /></Link>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {multiBuyProducts.slice(0, 8).map((product: any) => (
+                    <MultiBuyCard key={product.id} product={product} onAddToCart={addToCart} />
+                  ))}
+                </div>
               </div>
             )}
 
-            {/* View All Button */}
-            <div className="text-center mt-8">
-              <Link to="/products?section=featured">
-                <Button size="lg" variant="outline" className="group">
-                  View All {getSectionConfig('featured')?.name || 'Featured Equipment'}
-                  <ArrowRight className="size-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
+          </div>{/* end right column */}
+        </div>{/* end flex row */}
+      </div>{/* end max-w container */}
 
-      {/* Value Proposition Section */}
-      <section className="py-12 md:py-16 bg-gradient-to-b from-white to-slate-50">
-        <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2D3748] mb-6">
-              Transparent Pricing.<br className="hidden md:block" /> No Hidden Costs.
-            </h2>
-            <p className="text-lg md:text-xl text-slate-600 mb-8">
-              We operate on a simple, honest pricing model that brings transparency back to the catering equipment industry.
-            </p>
-
-            <div className="bg-gradient-to-r from-[#E31837] to-[#C41230] text-white p-8 md:p-12 rounded-2xl shadow-2xl mb-8">
-              <p className="text-3xl md:text-5xl font-bold mb-4">
-                Cost Price + $100
-              </p>
-              <p className="text-xl md:text-2xl mb-0">That's it. No more.</p>
-            </div>
-
-            <p className="text-lg text-slate-700 mb-8">
-              When you contact us, we provide the <strong className="text-[#2D3748]">true cost price</strong> plus our fixed $100 margin — what many call "mates rates."
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/contact">
-                <Button size="lg" className="bg-[#E31837] hover:bg-[#C41230] text-white text-lg px-8 py-6 h-auto">
-                  <Phone className="size-5 mr-2" />
-                  Get Your Quote Now
-                </Button>
-              </Link>
-              <Link to="/products">
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6 h-auto border-2">
-                  Browse Equipment
-                  <ArrowRight className="size-5 ml-2" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Social Proof Section */}
-      <section className="py-12 md:py-16 bg-slate-50 border-y">
-        <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#2D3748] mb-4">
-              Trusted by Australia's Biggest Organizations
-            </h2>
-            <p className="text-lg text-slate-600">
-              30+ years of combined industry experience
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="bg-white p-8 rounded-xl shadow-lg text-center border-t-4 border-[#E31837]">
-              <div className="text-5xl font-bold text-[#E31837] mb-2">30+</div>
-              <p className="text-lg font-semibold text-[#2D3748] mb-2">Years Experience</p>
-              <p className="text-slate-600">Combined industry knowledge from seasoned professionals</p>
-            </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg text-center border-t-4 border-[#E31837]">
-              <div className="text-5xl font-bold text-[#E31837] mb-2">100%</div>
-              <p className="text-lg font-semibold text-[#2D3748] mb-2">Transparency</p>
-              <p className="text-slate-600">No hidden markups, fees, or membership charges</p>
-            </div>
-
-            <div className="bg-white p-8 rounded-xl shadow-lg text-center border-t-4 border-[#E31837]">
-              <div className="text-5xl font-bold text-[#E31837] mb-2">$100</div>
-              <p className="text-lg font-semibold text-[#2D3748] mb-2">Fixed Markup</p>
-              <p className="text-slate-600">Our only margin on every product we sell</p>
-            </div>
-          </div>
-
-          <div className="mt-12 bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
-            <p className="text-lg text-center mb-4 font-semibold text-[#2D3748]">
-              We've Supplied Major Brands Including:
-            </p>
-            <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8">
-              <div className="text-2xl font-bold text-slate-700">Coles Group</div>
-              <div className="text-2xl font-bold text-slate-700">Woolworths Group</div>
-              <div className="text-2xl font-bold text-slate-700">The Coffee Club</div>
-              <div className="text-lg text-slate-600">& State Councils</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Grid */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#2D3748] mb-4">
-              Why Choose Costplus100?
-            </h2>
-            <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-              A buying club without membership fees, hidden catches, or marketing gimmicks
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
-              <div className="bg-red-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                <ShieldCheck className="size-7 text-[#E31837]" />
-              </div>
-              <h3 className="text-xl font-bold text-[#2D3748] mb-3">Best Price Guaranteed</h3>
-              <p className="text-slate-600">
-                Cost + $100 pricing means you always get the absolute best deal — no haggling needed.
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
-              <div className="bg-blue-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                <Award className="size-7 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-bold text-[#2D3748] mb-3">Industry Expertise</h3>
-              <p className="text-slate-600">
-                30+ years of combined experience supplying Australia's biggest organizations.
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
-              <div className="bg-green-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                <TrendingUp className="size-7 text-green-600" />
-              </div>
-              <h3 className="text-xl font-bold text-[#2D3748] mb-3">Wholesale Buying Power</h3>
-              <p className="text-slate-600">
-                Access to importer specials and wholesale opportunities normally unavailable to the public.
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
-              <div className="bg-purple-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                <CreditCard className="size-7 text-purple-600" />
-              </div>
-              <h3 className="text-xl font-bold text-[#2D3748] mb-3">No Hidden Fees</h3>
-              <p className="text-slate-600">
-                No membership fees, no hidden markups, no catches. Just honest, transparent pricing.
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
-              <div className="bg-orange-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                <Truck className="size-7 text-orange-600" />
-              </div>
-              <h3 className="text-xl font-bold text-[#2D3748] mb-3">Fast Delivery</h3>
-              <p className="text-slate-600">
-                Reliable delivery across Sydney, Melbourne, Brisbane and nationwide shipping available.
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border-2 border-slate-200 hover:border-[#E31837] transition-all hover:shadow-lg">
-              <div className="bg-slate-50 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-                <HeadphonesIcon className="size-7 text-slate-700" />
-              </div>
-              <h3 className="text-xl font-bold text-[#2D3748] mb-3">Expert Support</h3>
-              <p className="text-slate-600">
-                Personal service from experienced professionals who understand your needs.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA Section */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-[#2D3748] via-[#424B54] to-[#2D3748]">
-        <div className="max-w-5xl mx-auto px-4 lg:px-6 w-full text-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-            Ready to Experience True Transparency?
-          </h2>
-          <p className="text-xl md:text-2xl text-slate-200 mb-8">
-            Contact us today for honest Cost + $100 pricing on all catering equipment
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Link to="/contact">
-              <Button size="lg" className="bg-[#E31837] hover:bg-[#C41230] text-white text-lg px-10 py-7 h-auto shadow-xl">
-                <Phone className="size-6 mr-2" />
-                Get Quote Now
-              </Button>
-            </Link>
-            <Link to="/products">
-              <Button size="lg" variant="outline" className="bg-white hover:bg-slate-100 text-[#2D3748] border-0 text-lg px-10 py-7 h-auto shadow-xl">
-                <Search className="size-6 mr-2" />
-                Browse Catalogue
-              </Button>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 text-white">
-            <div>
-              <Phone className="size-8 mx-auto mb-3 text-[#E31837]" />
-              <p className="font-semibold text-lg mb-1">Call Us</p>
-              <p className="text-slate-300">Get instant answers</p>
-            </div>
-            <div>
-              <Mail className="size-8 mx-auto mb-3 text-[#E31837]" />
-              <p className="font-semibold text-lg mb-1">Email Quote</p>
-              <p className="text-slate-300">Detailed pricing info</p>
-            </div>
-            <div>
-              <Search className="size-8 mx-auto mb-3 text-[#E31837]" />
-              <p className="font-semibold text-lg mb-1">Browse First</p>
-              <p className="text-slate-300">Explore our range</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Loading Skeleton for Featured Products */}
-      {isFullyLoading && (
-        <section className="py-4 md:py-8 bg-white">
-          <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-            <div className="text-center mb-4 md:mb-6">
-              <div className="h-10 bg-slate-200 rounded animate-pulse w-64 mx-auto mb-1"></div>
-              <div className="h-5 bg-slate-200 rounded animate-pulse w-96 mx-auto max-w-full"></div>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-              {[...Array(8)].map((_, index) => (
-                <ProductCardSkeleton key={`featured-skeleton-${index}`} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Popular Products - REMOVED */}
       {/* {!isFullyLoading && displayPopularProducts.length > 0 && (
@@ -1156,16 +1067,36 @@ export function Home() {
         </div>
       </section> */}
 
-      {/* Simple Closing Statement */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 lg:px-6 w-full">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-gradient-to-r from-[#E31837] to-[#C41230] text-white p-8 md:p-12 rounded-xl text-center shadow-2xl">
-              <p className="text-2xl md:text-3xl lg:text-4xl font-bold mb-0">
-                Simple, fair, and transparent — the way business should be.
-              </p>
-            </div>
-          </div>
+      {/* About Us Section */}
+      <section className="py-10 bg-white border-t border-slate-100">
+        <div className="max-w-4xl mx-auto px-4 lg:px-6">
+          <h2 className="text-2xl font-bold text-[#2D3748] mb-4">About Costplus100</h2>
+
+          <p className="text-slate-700 leading-relaxed mb-4">
+            We are a group of highly experienced catering industry suppliers with more than 30 years of combined industry knowledge.
+            After supplying some of Australia's biggest organisations, we came together to create a fresh business model designed to
+            benefit everyday consumers, cafés, caterers, and businesses alike.
+          </p>
+
+          <p className="text-slate-700 leading-relaxed mb-4">
+            Over the years, we have supplied major organisations including <strong>Coles Group, Woolworths Group, The Coffee Club</strong>,
+            and state councils — just to name a few.
+          </p>
+
+          <p className="text-slate-700 leading-relaxed mb-4">
+            Our goal is simple: bring honesty, transparency, and fair pricing back into the industry.
+            Think of us as a <strong>buying club without the membership fees</strong>, hidden catches, or marketing gimmicks.
+          </p>
+
+          <p className="text-slate-700 leading-relaxed mb-4">
+            We operate on a straightforward and publicly declared pricing model — <strong>Cost Price + $100 markup</strong>. No more.
+            That means when you contact us, we will provide you with the true cost price plus our fixed $100 margin — what many would call "mates rates."
+          </p>
+
+          <p className="text-slate-700 leading-relaxed">
+            Whether you are a restaurant owner, café operator, hotel manager, or home cook looking for professional equipment,
+            we are here to give you the best possible price with total transparency.
+          </p>
         </div>
       </section>
 
@@ -1199,11 +1130,11 @@ export function Home() {
               </p>
 
               <a
-                href="tel:1800151654"
+                href="tel:1800151624"
                 className="flex items-center justify-center gap-3 w-full bg-[#E31837] hover:bg-[#C41230] text-white font-black text-lg md:text-xl py-4 md:py-5 rounded-xl transition-colors shadow-lg"
               >
                 <Phone className="size-5 md:size-6 shrink-0" />
-                1-800-151-654
+                1-800-151-624
               </a>
 
               <p className="text-center text-xs md:text-sm text-slate-400 font-medium tracking-wide">

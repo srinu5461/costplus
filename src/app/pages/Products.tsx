@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useSearchParams, Link, useParams } from 'react-router';
+import { useSearchParams, Link, useParams, useNavigate } from 'react-router';
 import { ProductCard } from '../components/ProductCard';
 import { useCMS, CategoryNode } from '../context/CMSContext';
 import { useProducts } from '../../hooks/useProducts';
@@ -48,15 +48,17 @@ export function Products() {
   const { data: productsFromCDN, isLoading: productsLoading, isError: productsError } = useProducts();
 
   // ✅ SMART FALLBACK: Use CDN if available, otherwise use CMS products
-  // This handles cases where sync hasn't been run yet
+  const cmsProducts = data.products || [];
   const products = (productsFromCDN && productsFromCDN.length > 0)
     ? productsFromCDN
-    : data.products || [];
+    : cmsProducts;
 
-  // ✅ Combined loading state (don't show loading if we have CMS products as fallback)
-  const loading = cmsLoading || (productsLoading && !data.products?.length);
+  // Show loading skeleton while we have nothing to show yet
+  const hasAnyProducts = products.length > 0;
+  const loading = cmsLoading || (productsLoading && !hasAnyProducts);
   const [searchParams, setSearchParams] = useSearchParams();
   const { categorySlug } = useParams();
+  const navigate = useNavigate();
   
   // Convert slug to category name if using slug-based URL
   const categoryFromSlug = categorySlug 
@@ -66,6 +68,7 @@ export function Products() {
   const categoryParam = categoryFromSlug || searchParams.get('category') || 'All Equipment';
   const sectionParam = searchParams.get('section'); // Get section filter
   const searchParam = searchParams.get('search') || ''; // Get search from URL
+  const multibuyParam = searchParams.get('multibuy') === 'true'; // Multi-buy filter
   const [selectedCategory, setSelectedCategory] = useState(categoryParam);
   const [searchQuery, setSearchQuery] = useState(searchParam); // Initialize with URL param
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
@@ -164,11 +167,19 @@ export function Products() {
     return sectionsConfig.find(s => s.id === sectionId);
   };
 
+  // Sync selectedCategory with URL parameter (handles nav bar links changing the URL)
+  useEffect(() => {
+    setSelectedCategory(categoryParam);
+    setCurrentPage(1);
+    setSelectedBrands(new Set());
+    setShowInStockOnly(false);
+  }, [categoryParam, multibuyParam]);
+
   // Sync searchQuery with URL parameter
   useEffect(() => {
     const newSearchQuery = searchParam;
     setSearchQuery(newSearchQuery);
-    
+
     // 🔍 IMPORTANT: When search query is present, reset category to "All Equipment"
     if (newSearchQuery && newSearchQuery.trim()) {
       setSelectedCategory('All Equipment');
@@ -185,6 +196,13 @@ export function Products() {
   }, [data.categoryTree]);
   
   const hasTreeData = categoryTree.length > 0;
+
+  // Auto-expand all L1 categories when the tree first loads
+  useEffect(() => {
+    if (categoryTree.length > 0 && expandedCategories.size === 0 && selectedCategory === 'All Equipment') {
+      setExpandedCategories(new Set(categoryTree.map(n => n.fullPath)));
+    }
+  }, [categoryTree]);
 
   // Helper: Build a map from category IDs to full paths
   const categoryIdToPath = useMemo(() => {
@@ -266,33 +284,17 @@ export function Products() {
     // Removed verbose console logs to reduce noise
 
     // Filter by section (featured/popular/promotion)
-    // ✅ CRITICAL: Only filter when we have section data loaded
-    if (sectionParam) {
-      if (sectionsLoading) {
-        // Still loading, return empty to show loading state
-        return [];
-      }
-      
-      // ✅ ALL SECTIONS use manual curation from Featured Sections admin
+    if (sectionParam && !sectionsLoading) {
       let sectionIds: string[] = [];
-      if (sectionParam === 'featured') {
-        sectionIds = featuredIds;
-      } else if (sectionParam === 'popular') {
-        sectionIds = popularIds;
-      } else if (sectionParam === 'promotion') {
-        sectionIds = promotionIds;
-      }
-      
-      // ✅ ONLY filter by section IDs - NO FALLBACK
-      // If admin hasn't set any IDs, show empty (user needs to configure in admin)
+      if (sectionParam === 'featured') sectionIds = featuredIds;
+      else if (sectionParam === 'popular') sectionIds = popularIds;
+      else if (sectionParam === 'promotion') sectionIds = promotionIds;
+
       if (sectionIds.length > 0) {
         filtered = filtered.filter((p) => sectionIds.includes(p.id));
         console.log(`✅ Section filtered to ${filtered.length} products for section: ${sectionParam}`);
-      } else {
-        // NO products configured for this section - return empty
-        console.log(`⚠️ No products configured for section: ${sectionParam}`);
-        filtered = [];
       }
+      // If no IDs configured, show all products (don't blank the page)
     }
     
     // Filter by category (support hierarchical filtering)
@@ -369,8 +371,17 @@ export function Products() {
     // Filter by stock availability
     if (showInStockOnly) {
       filtered = filtered.filter((p) => p.inStock);
-      
+
       console.log(`In stock filtered to ${filtered.length} products`);
+    }
+
+    // Filter to multi-buy products only
+    if (multibuyParam) {
+      filtered = filtered.filter((p) =>
+        p.hasMultiBuy === true ||
+        (p.multiBuyOptions && p.multiBuyOptions.length > 0)
+      );
+      console.log(`Multi-buy filtered to ${filtered.length} products`);
     }
 
     // Sort products
@@ -510,9 +521,10 @@ export function Products() {
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
     if (category === 'All Equipment') {
-      setSearchParams({});
+      navigate(multibuyParam ? '/products?multibuy=true' : '/products');
     } else {
-      setSearchParams({ category });
+      const slug = categoryToSlug(category);
+      navigate(`/products/c/${slug}`);
     }
   };
 
@@ -529,7 +541,7 @@ export function Products() {
     }
     
     if (selectedCategory === 'All Equipment') {
-      return [{ name: 'Home', path: '/' }, { name: 'All Equipment', path: 'All Equipment' }];
+      return [{ name: 'Home', path: '/' }, { name: multibuyParam ? 'All Multi-buy Products' : 'All Equipment', path: 'All Equipment' }];
     }
     
     const parts = selectedCategory.split(' > ');
@@ -617,14 +629,21 @@ export function Products() {
   // 1. We're viewing "All Equipment", OR
   // 2. We're at a leaf category (no children), OR
   // 3. There's an active search query (always show search results)
-  const shouldShowProducts = selectedCategory === 'All Equipment' || subcategories.length === 0 || searchQuery.trim().length > 0;
+  // 4. We're on the multibuy page (always show multibuy products)
+  const shouldShowProducts = multibuyParam || selectedCategory === 'All Equipment' || subcategories.length === 0 || searchQuery.trim().length > 0;
 
   // Get all unique brands from products
   const availableBrands = useMemo(() => {
     const brands = new Set<string>();
-    // Get brands only from filtered products (by category and search), before brand/price filtering
     let productsForBrands = products;
-    
+
+    // When on multibuy page, only show brands from multibuy products
+    if (multibuyParam) {
+      productsForBrands = productsForBrands.filter(p =>
+        p.hasMultiBuy === true || (p.multiBuyOptions && p.multiBuyOptions.length > 0)
+      );
+    }
+
     // Filter by category (support hierarchical filtering)
     if (selectedCategory !== 'All Equipment') {
       productsForBrands = productsForBrands.filter((p) => {
@@ -634,21 +653,21 @@ export function Products() {
           (p as any).categoryLevel3Id,
           (p as any).categoryLevel4Id,
         ].filter(Boolean);
-        
+
         for (let i = productCategoryIds.length - 1; i >= 0; i--) {
           const categoryId = productCategoryIds[i];
           const productFullPath = categoryIdToPath.get(categoryId);
-          
+
           if (productFullPath) {
             if (productFullPath === selectedCategory) return true;
             if (productFullPath.startsWith(selectedCategory + ' > ')) return true;
           }
         }
-        
+
         return false;
       });
     }
-    
+
     // Filter by search query
     if (searchQuery) {
       productsForBrands = productsForBrands.filter((p) =>
@@ -656,14 +675,53 @@ export function Products() {
         p.description?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    
-    // Now extract brands from the category-filtered products
+
     productsForBrands.forEach((p) => {
       if (p.brand) brands.add(p.brand);
     });
-    
+
     return Array.from(brands).sort();
-  }, [products, selectedCategory, searchQuery, categoryIdToPath]);
+  }, [products, selectedCategory, searchQuery, categoryIdToPath, multibuyParam]);
+
+  // When on multibuy page, compute which category fullPaths have multibuy products
+  const multibuyActiveCategoryPaths = useMemo(() => {
+    if (!multibuyParam) return null;
+    const paths = new Set<string>();
+    products
+      .filter(p => p.hasMultiBuy === true || (p.multiBuyOptions && p.multiBuyOptions.length > 0))
+      .forEach(p => {
+        const ids = [
+          (p as any).categoryLevel1Id,
+          (p as any).categoryLevel2Id,
+          (p as any).categoryLevel3Id,
+          (p as any).categoryLevel4Id,
+        ].filter(Boolean);
+        ids.forEach(id => {
+          const fullPath = categoryIdToPath.get(id);
+          if (fullPath) {
+            // Add the path and all its ancestor segments
+            const parts = fullPath.split(' > ');
+            parts.forEach((_, i) => paths.add(parts.slice(0, i + 1).join(' > ')));
+          }
+        });
+      });
+    return paths;
+  }, [multibuyParam, products, categoryIdToPath]);
+
+  // Category tree filtered to only categories with multibuy products (when on multibuy page)
+  const sidebarCategoryTree = useMemo(() => {
+    if (!multibuyParam || !multibuyActiveCategoryPaths || multibuyActiveCategoryPaths.size === 0) {
+      return categoryTree;
+    }
+    const filterNodes = (nodes: CategoryNode[]): CategoryNode[] =>
+      nodes.reduce<CategoryNode[]>((acc, node) => {
+        if (!multibuyActiveCategoryPaths.has(node.fullPath)) return acc;
+        const filteredChildren = node.children ? filterNodes(node.children) : [];
+        acc.push({ ...node, children: filteredChildren });
+        return acc;
+      }, []);
+    return filterNodes(categoryTree);
+  }, [categoryTree, multibuyParam, multibuyActiveCategoryPaths]);
 
   // Get min and max prices from products
   const priceStats = useMemo(() => {
@@ -738,40 +796,50 @@ export function Products() {
     const isExpanded = expandedCategories.has(node.fullPath);
     const isSelected = selectedCategory === node.fullPath;
 
+    const handleClick = () => {
+      if (hasChildren) {
+        // Expand/collapse inline — don't navigate away
+        toggleExpanded(node.fullPath);
+      } else {
+        // Leaf node — filter products
+        handleCategoryChange(node.fullPath);
+        if (isMobile && onSelect) onSelect();
+      }
+    };
+
     return (
       <div key={node.fullPath}>
         <div className="flex items-center">
           <Button
             variant={isSelected ? 'default' : 'ghost'}
-            onClick={() => {
-              handleCategoryChange(node.fullPath);
-              if (isMobile && onSelect) onSelect();
-            }}
+            onClick={handleClick}
             className={`flex-1 justify-start text-sm ${level === 0 ? 'font-semibold' : ''}`}
             size="sm"
             style={{ paddingLeft: `${level * 12 + 12}px` }}
           >
+            {hasChildren && (
+              <span className="mr-1 opacity-60">
+                {isExpanded ? <ChevronDown className="size-3.5 inline" /> : <ChevronRight className="size-3.5 inline" />}
+              </span>
+            )}
             {node.name}
             {node.productCount > 0 && (
               <span className="ml-auto text-xs opacity-60">({node.productCount})</span>
             )}
           </Button>
+          {/* Filter button for parent categories */}
           {hasChildren && (
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
+              title={`Filter by ${node.name}`}
               onClick={(e) => {
                 e.stopPropagation();
-                toggleExpanded(node.fullPath);
+                handleCategoryChange(node.fullPath);
+                if (isMobile && onSelect) onSelect();
               }}
-              className="w-8 h-8 p-0 shrink-0"
+              className="text-[10px] text-slate-400 hover:text-[#E31837] px-1 shrink-0 leading-none"
             >
-              {isExpanded ? (
-                <ChevronDown className="size-4" />
-              ) : (
-                <ChevronRight className="size-4" />
-              )}
-            </Button>
+              ↗
+            </button>
           )}
         </div>
 
@@ -880,65 +948,71 @@ export function Products() {
         })))}
       />
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-6 py-4 sm:py-6 lg:py-8 w-full">
-        {/* Breadcrumb and Title - Combined at Top */}
-        <div className="mb-4 pb-4 border-b bg-gradient-to-b from-slate-50 to-white -mx-4 lg:-mx-6 px-4 lg:px-6 py-4 rounded-lg">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap mb-3">
-            {breadcrumbs.map((crumb, index) => (
-              <div key={crumb.path} className="flex items-center gap-2">
-                {index > 0 && <ChevronRight className="size-4" />}
-                {index === breadcrumbs.length - 1 ? (
-                  <span className="text-slate-900 font-medium">{crumb.name}</span>
-                ) : crumb.path === '/' ? (
-                  <Link to="/" className="hover:text-[#E31837] transition-colors">
-                    {crumb.name}
-                  </Link>
-                ) : (
-                  <button
-                    onClick={() => handleCategoryChange(crumb.path)}
-                    className="hover:text-[#E31837] transition-colors"
-                  >
-                    {crumb.name}
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Title Section - Centered */}
-          <div className="text-center">
-            <h1 className="text-2xl lg:text-3xl font-bold mb-1">
-              {sectionParam
-                ? (getSectionConfig(sectionParam)?.name || (sectionParam.charAt(0).toUpperCase() + sectionParam.slice(1)))
-                : selectedCategory === 'All Equipment'
-                  ? 'All Products'
-                  : breadcrumbs[breadcrumbs.length - 1].name
-              }
+      <div className="max-w-7xl mx-auto px-4 lg:px-6 pt-3 pb-0 w-full">
+        {/* Top bar: category title centered + sort right */}
+        <div className="flex items-center justify-between mb-3 border-b pb-3">
+          <div className="flex-1 text-center">
+            <h1 className="text-xl font-bold text-[#2D3748]">
+              {multibuyParam ? 'Multi-buy Deals'
+                : sectionParam ? ((getSectionConfig(sectionParam)?.name || (sectionParam.charAt(0).toUpperCase() + sectionParam.slice(1))) + ' Products')
+                : selectedCategory === 'All Equipment' ? 'All Products'
+                : breadcrumbs[breadcrumbs.length - 1].name}
             </h1>
-            <p className="text-muted-foreground text-sm lg:text-base mb-2 hidden sm:block">
-              {sectionParam
-                ? (getSectionConfig(sectionParam)?.description || 'Browse our curated selection')
-                : selectedCategory === 'All Equipment'
-                  ? 'Browse our complete range of professional catering equipment'
-                  : `Explore our ${breadcrumbs[breadcrumbs.length - 1].name.toLowerCase()} collection`
-              }
-            </p>
-            <Badge variant="outline" className="w-fit mx-auto text-sm">
-              {filteredProducts.length} Products
-            </Badge>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Button variant="outline" size="sm" className="lg:hidden" onClick={() => setShowMobileFilters(!showMobileFilters)}>
+              <SlidersHorizontal className="size-4 mr-1" /> Filters
+            </Button>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-[180px] h-8 text-sm">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="featured">Featured</SelectItem>
+                <SelectItem value="priceLow">Price: Low to High</SelectItem>
+                <SelectItem value="priceHigh">Price: High to Low</SelectItem>
+                <SelectItem value="name">Name: A to Z</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
+      </div>
 
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 w-full overflow-x-hidden">
-          {/* Sidebar Filters - ONLY show when NOT viewing All Equipment */}
-          {selectedCategory !== 'All Equipment' && (
-            <aside className="hidden lg:block w-64 shrink-0">
-            <div className="space-y-4 sticky top-24">
-              {/* Filters Heading */}
-              <div className="flex items-center gap-2 mb-2">
-                <SlidersHorizontal className="size-5 text-[#E31837]" />
-                <h2 className="text-lg font-bold text-[#2D3748]">Filters</h2>
+      <div className="max-w-7xl mx-auto px-4 lg:px-6 pb-4 sm:pb-6 lg:pb-8 w-full">
+
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 w-full overflow-x-hidden">
+          {/* Sidebar Filters - no breadcrumbs, starts at top */}
+          <aside className="hidden lg:block w-64 shrink-0">
+            <div className="space-y-4 sticky top-20">
+              {/* Filters Heading - matches home sidebar style */}
+              <div className="bg-[#2D3748] text-white px-3 py-2 rounded-t-lg flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="size-4 text-white" />
+                  <span className="text-xs font-bold uppercase tracking-wider">Filters</span>
+                </div>
+                {(priceRange[0] !== priceStats.min || priceRange[1] !== priceStats.max || selectedBrands.size > 0 || showInStockOnly) && (
+                  <button onClick={clearAllFilters} className="text-[10px] text-red-300 hover:text-white hover:underline">Clear all</button>
+                )}
+              </div>
+
+              {/* Search Box in Sidebar */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 h-9 text-sm"
+                />
+                {searchQuery && (
+                  <button
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                    onClick={() => setSearchQuery('')}
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                )}
               </div>
 
               {/* Categories Card */}
@@ -959,8 +1033,8 @@ export function Products() {
                       All Equipment
                     </Button>
 
-                    {/* Recursive Category Tree - Shows ALL levels */}
-                    {hasTreeData && categoryTree.map((node) => (
+                    {/* Recursive Category Tree - filtered to multibuy categories when on multibuy page */}
+                    {hasTreeData && sidebarCategoryTree.map((node) => (
                       <CategoryTreeNode key={node.fullPath} node={node} level={0} />
                     ))}
                   </div>
@@ -1047,8 +1121,8 @@ export function Products() {
 
               {/* Clear Filters Button */}
               {(priceRange[0] !== priceStats.min || priceRange[1] !== priceStats.max || selectedBrands.size > 0 || showInStockOnly) && (
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={clearAllFilters}
                   className="w-full"
                 >
@@ -1057,67 +1131,25 @@ export function Products() {
               )}
             </div>
           </aside>
-          )}
 
           {/* Products Grid */}
           <div className="flex-1 w-full min-w-0">
-            {/* Search Bar - ONLY show when viewing All Equipment */}
-            {selectedCategory === 'All Equipment' && (
-              <div className="mb-6">
-                <div className="relative max-w-2xl mx-auto">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="Search all products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-12 h-14 text-lg"
-                  />
-                  {searchQuery && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-2 top-1/2 -translate-y-1/2"
-                      onClick={() => setSearchQuery('')}
-                    >
-                      <X className="size-4" />
-                    </Button>
+
+            {/* Breadcrumbs above pagination */}
+            <div className="flex items-center gap-1.5 text-sm text-muted-foreground flex-wrap mb-3">
+              {breadcrumbs.map((crumb, index) => (
+                <div key={crumb.path} className="flex items-center gap-1.5">
+                  {index > 0 && <ChevronRight className="size-3.5" />}
+                  {index === breadcrumbs.length - 1 ? (
+                    <span className="text-slate-800 font-semibold">{crumb.name}</span>
+                  ) : crumb.path === '/' ? (
+                    <Link to="/" className="hover:text-[#E31837] transition-colors">Home</Link>
+                  ) : (
+                    <button onClick={() => handleCategoryChange(crumb.path)} className="hover:text-[#E31837] transition-colors">{crumb.name}</button>
                   )}
                 </div>
-              </div>
-            )}
-
-            {/* Sorting and Filter Controls - TOP: Just sorting */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-              {/* Empty space for alignment on desktop, or filter button on mobile */}
-              <div className="flex gap-2 w-full sm:w-auto sm:ml-auto">
-                {/* Mobile Filter Button - ONLY show when NOT viewing All Equipment */}
-                {selectedCategory !== 'All Equipment' && (
-                  <Button 
-                    variant="outline" 
-                    className="flex-1 sm:hidden"
-                    onClick={() => setShowMobileFilters(!showMobileFilters)}
-                  >
-                    <SlidersHorizontal className="size-4 mr-2" />
-                    Filters & Categories
-                  </Button>
-                )}
-                
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-full sm:w-[200px]">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="featured">Featured</SelectItem>
-                    <SelectItem value="priceLow">Price: Low to High</SelectItem>
-                    <SelectItem value="priceHigh">Price: High to Low</SelectItem>
-                    <SelectItem value="name">Name: A to Z</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              ))}
             </div>
-
-            {/* Mobile Filters & Categories Drawer */}
             {showMobileFilters && (
               <div className="lg:hidden mb-6 space-y-4">
                 <Card>
@@ -1136,6 +1168,25 @@ export function Products() {
                       </Button>
                     </div>
                     
+                    {/* Search in Mobile Filter */}
+                    <div className="mb-4 relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        placeholder="Search products..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-9 h-9 text-sm"
+                      />
+                      {searchQuery && (
+                        <button className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400" onClick={() => setSearchQuery('')}>
+                          <X className="size-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    <Separator className="my-4" />
+
                     {/* Categories in Mobile Filter */}
                     <div className="mb-6">
                       <h3 className="font-semibold mb-3">Categories</h3>
@@ -1152,8 +1203,8 @@ export function Products() {
                           All Equipment
                         </Button>
                         
-                        {hasTreeData && categoryTree.map((node) => (
-                          <CategoryTreeNode key={node.fullPath} node={node} level={0} />
+                        {hasTreeData && sidebarCategoryTree.map((node) => (
+                          <CategoryTreeNode key={node.fullPath} node={node} level={0} isMobile={true} onSelect={() => setShowMobileFilters(false)} />
                         ))}
                       </div>
                     </div>
@@ -1218,17 +1269,23 @@ export function Products() {
 
                     {/* Clear Filters */}
                     {(priceRange[0] !== priceStats.min || priceRange[1] !== priceStats.max || selectedBrands.size > 0 || showInStockOnly) && (
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         onClick={() => {
                           clearAllFilters();
                           setShowMobileFilters(false);
                         }}
-                        className="w-full"
+                        className="w-full mb-2"
                       >
                         Clear All Filters
                       </Button>
                     )}
+                    <Button
+                      className="w-full bg-[#E31837] hover:bg-[#c0142e] text-white"
+                      onClick={() => setShowMobileFilters(false)}
+                    >
+                      View Results
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
@@ -1291,7 +1348,20 @@ export function Products() {
             )}
 
             {/* Products Grid */}
-            {shouldShowProducts && filteredProducts.length > 0 ? (
+            {productsLoading && !hasAnyProducts ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="rounded-lg overflow-hidden border bg-white">
+                    <div className="h-48 bg-slate-200 animate-pulse" />
+                    <div className="p-4 space-y-2">
+                      <div className="h-4 bg-slate-200 rounded animate-pulse" />
+                      <div className="h-4 w-3/4 bg-slate-200 rounded animate-pulse" />
+                      <div className="h-6 w-1/2 bg-slate-200 rounded animate-pulse" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : shouldShowProducts && filteredProducts.length > 0 ? (
               <>
                 {/* Pagination Controls - Top */}
                 {totalPages > 1 && (

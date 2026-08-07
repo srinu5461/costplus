@@ -40,11 +40,12 @@ export function CategoriesManager() {
   const navigate = useNavigate();
   
   // ✅ Safe access to CMS context with fallback
-  let data, updateCategories;
+  let data, updateCategories, updateCategoryTree;
   try {
     const cms = useCMS();
     data = cms.data;
     updateCategories = cms.updateCategories;
+    updateCategoryTree = cms.updateCategoryTree;
   } catch (e) {
     console.error('CategoriesManager: CMSProvider not available, using empty data');
     data = {
@@ -56,6 +57,7 @@ export function CategoriesManager() {
       homepage: { hero: { title: '', subtitle: '', image: '' }, features: [] },
     };
     updateCategories = async () => {};
+    updateCategoryTree = () => {};
   }
   
   const [categories, setCategories] = useState(data.categories);
@@ -234,11 +236,14 @@ export function CategoriesManager() {
 
       const result = await response.json();
       
-      // ✅ FIX: Instantly sync changes with the global CMS Context cache
+      // Sync updated tree into CMS context so re-navigation shows correct data
+      if (updateCategoryTree) {
+        updateCategoryTree(flattenedData);
+      }
       if (updateCategories) {
         await updateCategories(categories);
       }
-      
+
       alert('Categories saved successfully!');
       // 🚀 REMOVED window.location.reload() to prevent logging out!
       

@@ -35,12 +35,15 @@ import { useNavigate } from 'react-router';
 
 const API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-d1fbc049`;
 
+const ORDERS_PER_PAGE = 5;
+
 export function OrdersManager() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState<any[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -81,7 +84,6 @@ export function OrdersManager() {
   }, []);
 
   useEffect(() => {
-    // Filter orders based on search term
     if (searchTerm) {
       const filtered = orders.filter(order =>
         order.id.toString().includes(searchTerm) ||
@@ -92,6 +94,7 @@ export function OrdersManager() {
     } else {
       setFilteredOrders(orders);
     }
+    setCurrentPage(1);
   }, [searchTerm, orders]);
 
   const fetchOrders = async () => {
@@ -597,6 +600,40 @@ Please use Order #${order.id} as payment reference`);
           <CardTitle>All Orders ({filteredOrders.length})</CardTitle>
         </CardHeader>
         <CardContent>
+          {(() => {
+            const totalPages = Math.ceil(filteredOrders.length / ORDERS_PER_PAGE);
+            const paginatedOrders = filteredOrders.slice(
+              (currentPage - 1) * ORDERS_PER_PAGE,
+              currentPage * ORDERS_PER_PAGE
+            );
+            const goToPage = (page: number) => {
+              if (page >= 1 && page <= totalPages) setCurrentPage(page);
+            };
+            const PaginationControls = () => totalPages > 1 ? (
+              <div className="flex items-center justify-center gap-2 mt-4">
+                <Button variant="outline" size="sm" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>Previous</Button>
+                {currentPage > 3 && (
+                  <>
+                    <Button variant="outline" size="sm" onClick={() => goToPage(1)}>1</Button>
+                    {currentPage > 4 && <span className="px-2">...</span>}
+                  </>
+                )}
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(p => p >= currentPage - 2 && p <= currentPage + 2)
+                  .map(p => (
+                    <Button key={p} size="sm" variant={p === currentPage ? 'default' : 'outline'} onClick={() => goToPage(p)}>{p}</Button>
+                  ))}
+                {currentPage < totalPages - 2 && (
+                  <>
+                    {currentPage < totalPages - 3 && <span className="px-2">...</span>}
+                    <Button variant="outline" size="sm" onClick={() => goToPage(totalPages)}>{totalPages}</Button>
+                  </>
+                )}
+                <Button variant="outline" size="sm" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>Next</Button>
+              </div>
+            ) : null;
+            return (
+          <>
           {loading ? (
             <div className="text-center py-12">
               <Loader2 className="size-8 animate-spin mx-auto text-[#E31837] mb-2" />
@@ -623,7 +660,7 @@ Please use Order #${order.id} as payment reference`);
                     </TableRow>
                   </TableHeader>
                 <TableBody>
-                  {filteredOrders.map((order) => (
+                  {paginatedOrders.map((order) => (
                     <TableRow key={order.id}>
                       <TableCell className="font-mono">#{order.id}</TableCell>
                       <TableCell>
@@ -811,6 +848,9 @@ Please use Order #${order.id} as payment reference`);
                 </Table>
             </div>
           )}
+          <PaginationControls />
+          </>);
+          })()}
         </CardContent>
       </Card>
 

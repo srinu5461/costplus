@@ -250,6 +250,12 @@ export function FeaturedProducts() {
       setLastSaved(timestamp);
       notify.success('Section assignments saved successfully!');
       logger.info('Section assignments saved', { timestamp });
+
+      // Rebuild featured CDN file in background so homepage loads fast
+      fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-d1fbc049/sync-featured`,
+        { method: 'POST', headers: { 'Authorization': `Bearer ${publicAnonKey}` } }
+      ).catch(() => {});
     } catch (error) {
       logger.error('Failed to save section assignments', error);
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';

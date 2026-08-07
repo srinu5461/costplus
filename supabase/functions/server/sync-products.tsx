@@ -168,7 +168,72 @@ app.post('/make-server-d1fbc049/sync-products', async (c) => {
   }
 });
 
-// Helper function to compress and upload a chunk
+// POST /make-server-d1fbc049/sync-featured — build featured-products.json CDN file
+// Call this after saving featured products in admin, or on a schedule
+app.post('/make-server-d1fbc049/sync-featured', async (c) => {
+  try {
+    const kvSupabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Get featured/popular/promo IDs from KV
+    const sections = await kv.get('featured_sections') as any || {};
+    const featuredIds: string[] = sections.featured || [];
+    const popularIds: string[] = sections.popular || [];
+    const promoIds: string[] = sections.promotion || [];
+    const allIds = [...new Set([...featuredIds, ...popularIds, ...promoIds])];
+
+    if (allIds.length === 0) {
+      return c.json({ success: false, error: 'No featured/popular/promo IDs configured' });
+    }
+
+    // Fetch just those products from KV
+    const featuredProducts: any[] = [];
+    for (const id of allIds) {
+      const cleanId = id.replace(/^P_/i, ''); // strip P_ prefix if present
+      const product = await kv.get(`products:P_${cleanId}`) || await kv.get(`products:${cleanId}`) || await kv.get(`products:${id}`);
+      if (product && typeof product === 'object' && product.name) {
+        featuredProducts.push(product);
+      }
+    }
+
+    if (featuredProducts.length === 0) {
+      return c.json({ success: false, error: 'No featured products found in database' });
+    }
+
+    // Upload as plain JSON (small file, no need to gzip)
+    const content = new TextEncoder().encode(JSON.stringify({
+      featuredIds,
+      popularIds,
+      promoIds,
+      products: featuredProducts,
+      timestamp: new Date().toISOString(),
+    }));
+
+    await supabase.storage
+      .from(BUCKET_NAME)
+      .upload('featured-products.json', content, {
+        contentType: 'application/json',
+        cacheControl: '300', // 5 min cache
+        upsert: true,
+      });
+
+    console.log(`[Featured Sync] Uploaded ${featuredProducts.length} featured products`);
+
+    return c.json({
+      success: true,
+      count: featuredProducts.length,
+      featuredIds: featuredIds.length,
+      popularIds: popularIds.length,
+      promoIds: promoIds.length,
+      timestamp: new Date().toISOString(),
+    });
+
+  } catch (error) {
+    console.error('[Featured Sync] Error:', error);
+    return c.json({ success: false, error: String(error) }, 500);
+  }
+});
+
+
 async function uploadChunk(products: any[], fileName: string) {
   const jsonContent = JSON.stringify(products);
   const jsonBytes = new TextEncoder().encode(jsonContent);
@@ -204,7 +269,7 @@ async function uploadChunk(products: any[], fileName: string) {
     .from(BUCKET_NAME)
     .upload(fileName, compressed, {
       contentType: 'application/gzip',
-      cacheControl: '3600',
+      cacheControl: '0',
       upsert: true
     });
 
@@ -314,6 +379,19 @@ app.get('/make-server-d1fbc049/products-url', async (c) => {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
     }, 500);
+  }
+});
+
+// GET /make-server-d1fbc049/featured-url — get public URL for featured-products.json
+app.get('/make-server-d1fbc049/featured-url', async (c) => {
+  try {
+    const { data: { publicUrl } } = supabase.storage
+      .from(BUCKET_NAME)
+      .getPublicUrl('featured-products.json');
+
+    return c.json({ success: true, url: `${publicUrl}?t=${Date.now()}` });
+  } catch (error) {
+    return c.json({ success: false, error: String(error) }, 500);
   }
 });
 

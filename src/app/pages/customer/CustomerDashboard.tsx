@@ -35,6 +35,8 @@ interface Customer {
   phone: string;
 }
 
+const ORDERS_PER_PAGE = 10;
+
 export function CustomerDashboard() {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -42,6 +44,7 @@ export function CustomerDashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState('orders');
+  const [currentPage, setCurrentPage] = useState(1);
   const [customerDiscountPercentage, setCustomerDiscountPercentage] = useState(0);
   const [canBuyAtCostPrice, setCanBuyAtCostPrice] = useState(false);
 
@@ -321,7 +324,18 @@ export function CustomerDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {orders.map((order) => (
+                    {(() => {
+                      const totalPages = Math.ceil(orders.length / ORDERS_PER_PAGE);
+                      const paginatedOrders = orders.slice(
+                        (currentPage - 1) * ORDERS_PER_PAGE,
+                        currentPage * ORDERS_PER_PAGE
+                      );
+                      const goToPage = (page: number) => {
+                        if (page >= 1 && page <= totalPages) setCurrentPage(page);
+                      };
+                      return (
+                        <>
+                          {paginatedOrders.map((order) => (
                       <div key={order.id} className="border rounded-lg p-4 hover:border-[#E31837] transition-colors">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                           <div>
@@ -469,7 +483,33 @@ export function CustomerDashboard() {
                           </Button>
                         </div>
                       </div>
-                    ))}
+                          ))}
+                          {totalPages > 1 && (
+                            <div className="flex items-center justify-center gap-2 mt-6">
+                              <Button variant="outline" size="sm" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>Previous</Button>
+                              {currentPage > 3 && (
+                                <>
+                                  <Button variant="outline" size="sm" onClick={() => goToPage(1)}>1</Button>
+                                  {currentPage > 4 && <span className="px-2">...</span>}
+                                </>
+                              )}
+                              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                                .filter(p => p >= currentPage - 2 && p <= currentPage + 2)
+                                .map(p => (
+                                  <Button key={p} size="sm" variant={p === currentPage ? 'default' : 'outline'} onClick={() => goToPage(p)} className={p === currentPage ? 'bg-[#E31837] hover:bg-[#E31837]/90' : ''}>{p}</Button>
+                                ))}
+                              {currentPage < totalPages - 2 && (
+                                <>
+                                  {currentPage < totalPages - 3 && <span className="px-2">...</span>}
+                                  <Button variant="outline" size="sm" onClick={() => goToPage(totalPages)}>{totalPages}</Button>
+                                </>
+                              )}
+                              <Button variant="outline" size="sm" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>Next</Button>
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
                 )}
               </CardContent>

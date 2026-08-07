@@ -14,6 +14,7 @@ export interface SizeVariant {
   cm?: string; // e.g., "96-102"
   waist?: string; // Waist measurement
   chest?: string; // Chest measurement
+  multiBuyOptions?: Array<{ quantity: number; price: number; costPrice: number; markupPercent: number }>;
 }
 
 export interface Product {

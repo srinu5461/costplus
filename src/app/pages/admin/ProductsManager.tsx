@@ -282,6 +282,13 @@ export function ProductsManager() {
         setEditingProduct(productToSave);
 
         notify.success('Product added successfully');
+
+        // Push to eBay in background (fire and forget)
+        fetch(`${API_URL}/ebay/sync-listings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${publicAnonKey}` },
+          body: JSON.stringify({ codes: [productToSave.code] }),
+        }).catch(() => {});
       } else {
         // Update existing product
         console.log('🔄 Updating product:', {
@@ -309,6 +316,13 @@ export function ProductsManager() {
         }
 
         notify.success('Product updated successfully');
+
+        // Push updated product to eBay in background (fire and forget)
+        fetch(`${API_URL}/ebay/sync-listings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${publicAnonKey}` },
+          body: JSON.stringify({ codes: [editingProduct.code] }),
+        }).catch(() => {});
       }
 
       if (isNewProduct) {

@@ -4,7 +4,7 @@ import { SquareLogoBlack } from './SquareLogo';
 
 export function TrustBadges() {
   // Fixed phone number - never changes regardless of CMS
-  const phoneNumber = '1-800-151-654';
+  const phoneNumber = '1-800-151-624';
 
   const badges = [
     {

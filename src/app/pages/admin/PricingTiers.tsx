@@ -186,7 +186,7 @@ export default function PricingTiers() {
 
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout per batch
+          const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout per batch
 
           const response = await fetch(
             `https://${projectId}.supabase.co/functions/v1/make-server-d1fbc049/pricing/bulk-update`,
@@ -196,7 +196,7 @@ export default function PricingTiers() {
                 'Authorization': `Bearer ${publicAnonKey}`,
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ offset, batchSize: 500 }),
+              body: JSON.stringify({ offset, batchSize: 100 }),
               signal: controller.signal,
             }
           );

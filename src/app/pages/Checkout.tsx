@@ -243,12 +243,9 @@ export function Checkout() {
 
   // Terms and conditions acceptance
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [refundPolicyAccepted, setRefundPolicyAccepted] = useState(false);
-  const [pickupTermsAccepted, setPickupTermsAccepted] = useState(false);
 
   // Legal pages content from database
   const [termsContent, setTermsContent] = useState('');
-  const [refundPolicyContent, setRefundPolicyContent] = useState('');
   const [loadingLegalPages, setLoadingLegalPages] = useState(true);
 
   // BOGO calculations
@@ -351,11 +348,15 @@ export function Checkout() {
     setCalculatingShipping(true);
     
     try {
-      // Get all unique categories from cart items
+      // Get categories with their max item price for quote threshold check
       const categories = [...new Set(cart.map(item => item.product.category))];
-      
+      const cartItems = cart.map(item => ({
+        category: item.product.category,
+        price: item.product.price || 0,
+      }));
+
       logger.debug('Calculating shipping', { postcode: shippingForm.postcode, cartTotal: subtotal, categories });
-      
+
       const response = await fetch(`${API_URL}/shipping/calculate`, {
         method: 'POST',
         headers: {
@@ -366,6 +367,7 @@ export function Checkout() {
           postcode: shippingForm.postcode,
           cartTotal: subtotal,
           categories,
+          cartItems,
         }),
       });
       
@@ -2268,7 +2270,6 @@ export function Checkout() {
                               // Reset to original shipping method
                               setShippingMethod('standard');
                               setSelectedPickupLocation('');
-                              setPickupTermsAccepted(false);
                               // Reset shipping calculation state
                               setShippingCalculated(false);
                               setShippingCost(0);
@@ -2344,19 +2345,12 @@ export function Checkout() {
                             </RadioGroup>
                           )}
 
-                          {/* Pickup Terms Acceptance */}
+                          {/* Pickup Instructions Notice */}
                           <div className="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                            <input
-                              type="checkbox"
-                              id="pickupTerms"
-                              checked={pickupTermsAccepted}
-                              onChange={(e) => setPickupTermsAccepted(e.target.checked)}
-                              className="mt-1 size-4 rounded"
-                              required={usePickup}
-                            />
-                            <Label htmlFor="pickupTerms" className="text-sm cursor-pointer">
-                              I have read and agree to the <Link to="/terms-and-conditions" target="_blank" className="text-[#E31837] underline hover:text-[#E31837]/80">pickup terms and conditions</Link> *
-                            </Label>
+                            <span className="text-amber-600 text-lg shrink-0">ℹ️</span>
+                            <p className="text-sm text-amber-800">
+                              <strong>Pickup Instructions:</strong> Detailed pickup instructions will be provided via email after your order is placed.
+                            </p>
                           </div>
                         </div>
                       )}
@@ -2451,109 +2445,6 @@ export function Checkout() {
                         </div>
                       </div>
 
-                      {/* Return & Refund Policy */}
-                      <div className="space-y-2 pt-2">
-                        <Label className="font-semibold text-sm">Return & Refund Policy *</Label>
-                        <div className="bg-white border border-gray-300 rounded-lg p-4 h-48 overflow-y-auto text-xs space-y-3">
-                          {loadingLegalPages ? (
-                            <div className="flex items-center justify-center h-full">
-                              <p className="text-slate-500">Loading return policy...</p>
-                            </div>
-                          ) : refundPolicyContent ? (
-                            <div dangerouslySetInnerHTML={{ __html: refundPolicyContent }} />
-                          ) : (
-                            // Fallback content if not in database
-                            <>
-                          <div>
-                            <h4 className="font-semibold text-sm mb-1">Our Commitment to Customer Satisfaction</h4>
-                            <p>At Costplus100, we stand behind the quality of our products. If you're not completely satisfied with your purchase, we're here to help with returns and refunds according to the policy outlined below.</p>
-                          </div>
-                          
-                          <div>
-                            <h4 className="font-semibold text-sm mb-1">1. 30-Day Return Policy</h4>
-                            <p className="mb-1">We offer a 30-day return policy on most items from the date of delivery. To be eligible for a return:</p>
-                            <ul className="list-disc ml-5 space-y-1">
-                              <li>Items must be in original, unused condition</li>
-                              <li>Original packaging must be intact and undamaged</li>
-                              <li>All accessories, manuals, and components must be included</li>
-                              <li>Proof of purchase (receipt or order confirmation) must be provided</li>
-                            </ul>
-                          </div>
-                          
-                          <div>
-                            <h4 className="font-semibold text-sm mb-1">2. Non-Returnable Items</h4>
-                            <p className="mb-1">Certain items cannot be returned for hygiene or safety reasons:</p>
-                            <ul className="list-disc ml-5 space-y-1">
-                              <li>Custom or special-order items made to your specifications</li>
-                              <li>Items marked as "Final Sale" or "Non-Returnable"</li>
-                              <li>Used or installed equipment</li>
-                              <li>Items without original packaging</li>
-                              <li>Perishable goods or consumables that have been opened</li>
-                            </ul>
-                          </div>
-                          
-                          <div>
-                            <h4 className="font-semibold text-sm mb-1">3. How to Initiate a Return</h4>
-                            <p className="mb-1">To start a return, please follow these steps:</p>
-                            <ol className="list-decimal ml-5 space-y-1">
-                              <li>Contact our customer service team at <strong>admin@costplus100.com.au</strong> or call <strong>(08) 6165 8444</strong></li>
-                              <li>Provide your order number and reason for return</li>
-                              <li>Wait for return authorization and instructions</li>
-                              <li>Pack the item securely in its original packaging</li>
-                              <li>Ship the item to the address provided by our team</li>
-                            </ol>
-                            <p className="mt-2"><strong>Important:</strong> Do not ship items back without prior authorization. Unauthorized returns may not be accepted.</p>
-                          </div>
-                          
-                          <div>
-                            <h4 className="font-semibold text-sm mb-1">4. Refund Process</h4>
-                            <p className="mb-1">Once we receive and inspect your return:</p>
-                            <ul className="list-disc ml-5 space-y-1">
-                              <li>If approved, your refund will be processed within 5-7 business days</li>
-                              <li>Refunds will be issued to the original payment method</li>
-                              <li>You will receive an email confirmation when the refund is processed</li>
-                              <li>Please allow 5-10 business days for the refund to appear in your account</li>
-                            </ul>
-                          </div>
-                          
-                          <div>
-                            <h4 className="font-semibold text-sm mb-1">5. Damaged or Defective Items</h4>
-                            <p className="mb-1">If you receive a damaged or defective item:</p>
-                            <ul className="list-disc ml-5 space-y-1">
-                              <li>Contact us within 48 hours of delivery</li>
-                              <li>Provide photos of the damage or defect</li>
-                              <li>We will arrange for a replacement or full refund at no cost to you</li>
-                              <li>Return shipping will be covered by Costplus100</li>
-                            </ul>
-                          </div>
-                          
-                          <div>
-                            <h4 className="font-semibold text-sm mb-1">6. Contact Us</h4>
-                            <p className="mb-1">For return questions or assistance, contact us:</p>
-                            <ul className="list-disc ml-5 space-y-1">
-                              <li>Email: admin@costplus100.com.au</li>
-                              <li>Phone: (08) 6165 8444</li>
-                              <li>Business Hours: Monday-Friday, 9am-5pm AWST</li>
-                            </ul>
-                          </div>
-                          </>
-                          )}
-                        </div>
-                        
-                        <div className="flex items-start gap-3 pt-2">
-                          <input
-                            type="checkbox"
-                            id="refundAccept"
-                            checked={refundPolicyAccepted}
-                            onChange={(e) => setRefundPolicyAccepted(e.target.checked)}
-                            className="mt-1 size-4 rounded"
-                            required
-                          />
-                          <Label htmlFor="refundAccept" className="text-sm cursor-pointer">
-                            I have read and understand the <Link to="/return-refund-policy" target="_blank" className="text-[#E31837] underline hover:text-[#E31837]/80">Return & Refund Policy</Link> *
-                          </Label>
-                        </div>
-                      </div>
                     </div>
 
                     <div className="flex gap-3 pt-2">
@@ -2567,8 +2458,7 @@ export function Checkout() {
                         className="flex-1 h-12 bg-[#E31837] hover:bg-[#E31837]/90 font-semibold rounded-xl"
                         disabled={
                           !termsAccepted ||
-                          !refundPolicyAccepted ||
-                          (usePickup && (!selectedPickupLocation || !pickupTermsAccepted))
+                          (usePickup && !selectedPickupLocation)
                         }
                       >
                         Continue to Payment
