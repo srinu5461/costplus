@@ -1215,14 +1215,14 @@ export function ProductDetail() {
                 <span className="text-sm font-semibold text-green-600">In Stock</span>
               </div>
             )}
-            {!productInStock && backOrderAvailable && (
+            {backOrderAvailable && (
               <div className="flex flex-col gap-1 py-2 px-3 bg-amber-50 border border-amber-200 rounded">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="size-5 text-amber-600" />
                   <span className="text-sm font-semibold text-amber-700">Available on Backorder</span>
                 </div>
                 {uropaPromisedDate && (
-                  <span className="text-xs text-amber-600 ml-7">Expected: {uropaPromisedDate}</span>
+                  <span className="text-xs text-amber-600 ml-7">Expected: {new Date(uropaPromisedDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                 )}
               </div>
             )}
