@@ -839,9 +839,11 @@ export function ProductDetail() {
   const productCategory = displayProduct?.category || 'Uncategorized';
   const productDescription = displayProduct?.description;
   const productBrand = displayProduct?.brand;
-  const productInStock = displayProduct?.inStock ?? true;
-  const backOrderAvailable = displayProduct?.backOrderAvailable || false;
   const uropaPromisedDate = displayProduct?.uropaPromisedDate || '';
+  const backOrderAvailable = displayProduct?.backOrderAvailable || false;
+  // If promised date is in the future, treat as out of stock until it arrives
+  const promisedDateInFuture = uropaPromisedDate ? new Date(uropaPromisedDate) > new Date() : false;
+  const productInStock = promisedDateInFuture ? false : (displayProduct?.inStock ?? true);
   const productRating = displayProduct?.rating || 4.7;
   const productBrandLogo = displayProduct?.brandLogo || displayProduct?.brandLogoUrl;
   const productCode = displayProduct?.code || displayProduct?.sku || '';
