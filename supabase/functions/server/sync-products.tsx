@@ -36,23 +36,25 @@ const initBucket = async () => {
 // Initialize on module load
 await initBucket();
 
-// POST /make-server-d1fbc049/sync-products - Sync all products to chunked JSON files
-app.post('/make-server-d1fbc049/sync-products', async (c) => {
+// Background sync function
+async function runProductSync() {
+  const kvSupabase = createClient(supabaseUrl, supabaseServiceKey);
+  const BATCH_SIZE = 500;
+  const CHUNK_SIZE = 1000;
+
+  let totalCount = 0;
+  let chunkIndex = 0;
+  let currentChunk: any[] = [];
+  const uploadedChunks: string[] = [];
+  let offset = 0;
+
+  // Save running status
+  await kvSupabase.from('kv_store_577b3f26').upsert({
+    key: 'sync:cdn-status',
+    value: { status: 'running', startedAt: new Date().toISOString() }
+  });
+
   try {
-    console.log('Starting product sync to chunked JSON files...');
-
-    const kvSupabase = createClient(supabaseUrl, supabaseServiceKey);
-    const BATCH_SIZE = 500;
-    const CHUNK_SIZE = 1000; // Products per chunk file
-    const MAX_CHUNK_SIZE_MB = 4; // Keep chunks under 4MB to be safe
-
-    let totalCount = 0;
-    let chunkIndex = 0;
-    let currentChunk: any[] = [];
-    const uploadedChunks: string[] = [];
-
-    let offset = 0;
-
     while (true) {
       const { data: batch, error: fetchError } = await kvSupabase
         .from('kv_store_577b3f26')
@@ -60,54 +62,33 @@ app.post('/make-server-d1fbc049/sync-products', async (c) => {
         .like('key', 'products:%')
         .range(offset, offset + BATCH_SIZE - 1);
 
-      if (fetchError) {
-        throw new Error(`Database fetch error: ${fetchError.message}`);
-      }
-
+      if (fetchError) throw new Error(`Database fetch error: ${fetchError.message}`);
       if (!batch || batch.length === 0) break;
 
       for (const item of batch) {
         const product = item.value;
-
-        // Filter out non-product entries (sections, categories, metadata)
-        // Skip if not a valid object
-        if (!product || typeof product !== 'object') {
-          continue;
-        }
-
-        // Skip if no valid name
-        if (!product.name || product.name === '' || product.name === 'Unnamed Product') {
-          continue;
-        }
-
-        // Skip if no identifier
-        if (!product.code && !product.id && !product.sku) {
-          continue;
-        }
-
-        // Skip if no price
-        if (product.price === undefined || product.price === null) {
-          continue;
-        }
-
-        // Skip metadata objects (sections, categories, etc.)
-        if (product.sections || product.categories || product.sectionsConfig) {
-          console.log(`Skipping metadata object with sections/categories`);
-          continue;
-        }
+        if (!product || typeof product !== 'object') continue;
+        if (!product.name || product.name === '' || product.name === 'Unnamed Product') continue;
+        if (!product.code && !product.id && !product.sku) continue;
+        if (product.price === undefined || product.price === null) continue;
+        if (product.sections || product.categories || product.sectionsConfig) continue;
 
         currentChunk.push(product);
         totalCount++;
 
-        // Check if chunk is ready to upload
         if (currentChunk.length >= CHUNK_SIZE) {
           const chunkFileName = `products-chunk-${chunkIndex}.json.gz`;
           await uploadChunk(currentChunk, chunkFileName);
           uploadedChunks.push(chunkFileName);
-          console.log(`Uploaded chunk ${chunkIndex} with ${currentChunk.length} products`);
-
+          console.log(`Uploaded chunk ${chunkIndex} with ${currentChunk.length} products (total: ${totalCount})`);
           currentChunk = [];
           chunkIndex++;
+
+          // Update progress in KV
+          await kvSupabase.from('kv_store_577b3f26').upsert({
+            key: 'sync:cdn-status',
+            value: { status: 'running', totalCount, chunksUploaded: chunkIndex, startedAt: new Date().toISOString() }
+          });
         }
       }
 
@@ -115,7 +96,6 @@ app.post('/make-server-d1fbc049/sync-products', async (c) => {
       offset += BATCH_SIZE;
     }
 
-    // Upload remaining products
     if (currentChunk.length > 0) {
       const chunkFileName = `products-chunk-${chunkIndex}.json.gz`;
       await uploadChunk(currentChunk, chunkFileName);
@@ -123,15 +103,6 @@ app.post('/make-server-d1fbc049/sync-products', async (c) => {
       console.log(`Uploaded final chunk ${chunkIndex} with ${currentChunk.length} products`);
     }
 
-    if (totalCount === 0) {
-      return c.json({
-        success: false,
-        error: 'No products found in database',
-        count: 0
-      }, 404);
-    }
-
-    // Create manifest file
     const manifest = {
       totalProducts: totalCount,
       totalChunks: uploadedChunks.length,
@@ -140,31 +111,53 @@ app.post('/make-server-d1fbc049/sync-products', async (c) => {
     };
 
     const manifestContent = new TextEncoder().encode(JSON.stringify(manifest));
-    await supabase.storage
-      .from(BUCKET_NAME)
-      .upload('manifest.json', manifestContent, {
-        contentType: 'application/json',
-        cacheControl: '3600',
-        upsert: true
-      });
-
-    console.log(`Sync complete: ${totalCount} products in ${uploadedChunks.length} chunks`);
-
-    return c.json({
-      success: true,
-      message: 'Products synced successfully',
-      count: totalCount,
-      chunks: uploadedChunks.length,
-      timestamp: new Date().toISOString()
+    await supabase.storage.from(BUCKET_NAME).upload('manifest.json', manifestContent, {
+      contentType: 'application/json',
+      cacheControl: '3600',
+      upsert: true
     });
 
+    // Save completed status
+    await kvSupabase.from('kv_store_577b3f26').upsert({
+      key: 'sync:cdn-status',
+      value: { status: 'completed', totalCount, chunks: uploadedChunks.length, completedAt: new Date().toISOString() }
+    });
+
+    console.log(`Sync complete: ${totalCount} products in ${uploadedChunks.length} chunks`);
   } catch (error) {
-    console.error('Product sync error:', error);
-    return c.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error during sync',
-      details: String(error)
-    }, 500);
+    await kvSupabase.from('kv_store_577b3f26').upsert({
+      key: 'sync:cdn-status',
+      value: { status: 'failed', error: String(error), failedAt: new Date().toISOString() }
+    });
+    console.error('Sync failed:', error);
+  }
+}
+
+// POST /make-server-d1fbc049/sync-products - Sync all products to chunked JSON files (background)
+app.post('/make-server-d1fbc049/sync-products', async (c) => {
+  // Respond immediately, run sync in background
+  EdgeRuntime.waitUntil(runProductSync());
+
+  return c.json({
+    success: true,
+    message: 'Sync started in background. Check /sync-products/status for progress.',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// GET /make-server-d1fbc049/sync-products/status - Check sync progress
+app.get('/make-server-d1fbc049/sync-products/status', async (c) => {
+  try {
+    const kvSupabase = createClient(supabaseUrl, supabaseServiceKey);
+    const { data } = await kvSupabase
+      .from('kv_store_577b3f26')
+      .select('value')
+      .eq('key', 'sync:cdn-status')
+      .single();
+
+    return c.json({ success: true, status: data?.value || { status: 'never_run' } });
+  } catch (error) {
+    return c.json({ success: false, error: String(error) }, 500);
   }
 });
 

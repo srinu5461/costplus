@@ -27,9 +27,43 @@ export function ProductsVirtualized() {
       .catch((err) => console.error('Failed to load DB info:', err));
   }, []);
 
+  const pollSyncStatus = async () => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/make-server-d1fbc049/sync-products/status`,
+          { headers: { Authorization: `Bearer ${publicAnonKey}` } }
+        );
+        const data = await res.json();
+        const status = data?.status?.status;
+
+        if (status === 'completed') {
+          clearInterval(interval);
+          setSyncing(false);
+          toast.success(
+            `Sync complete! ${data.status.totalCount?.toLocaleString()} products in ${data.status.chunks} chunks.`,
+            { id: 'sync', duration: 5000 }
+          );
+          await queryClient.invalidateQueries({ queryKey: ['products-json'] });
+          setRefreshKey(prev => prev + 1);
+        } else if (status === 'failed') {
+          clearInterval(interval);
+          setSyncing(false);
+          toast.error(`Sync failed: ${data.status.error}`, { id: 'sync' });
+        } else if (status === 'running') {
+          const count = data.status.totalCount || 0;
+          const chunks = data.status.chunksUploaded || 0;
+          toast.loading(`Syncing... ${count.toLocaleString()} products, ${chunks} chunks uploaded`, { id: 'sync' });
+        }
+      } catch (e) {
+        // ignore poll errors
+      }
+    }, 5000);
+  };
+
   const handleSync = async () => {
     setSyncing(true);
-    toast.loading('Syncing products to CDN...', { id: 'sync' });
+    toast.loading('Starting CDN sync in background...', { id: 'sync' });
 
     try {
       const response = await fetch(
@@ -48,33 +82,12 @@ export function ProductsVirtualized() {
         throw new Error(error.error || 'Sync failed');
       }
 
-      const result = await response.json();
+      toast.loading('Sync running in background — checking progress...', { id: 'sync' });
+      pollSyncStatus();
 
-      toast.success(
-        `Successfully synced ${result.count.toLocaleString()} products to CDN! The list will refresh automatically.`,
-        { id: 'sync', duration: 5000 }
-      );
-
-      // ✅ FORCE FRESH DATA: Invalidate React Query cache to fetch fresh products from CDN
-      await queryClient.invalidateQueries({ queryKey: ['products-json'] });
-
-      // Trigger a component refresh without full page reload
-      setRefreshKey(prev => prev + 1);
-
-      // Reload DB info
-      fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-d1fbc049/products-count`,
-        {
-          headers: {
-            Authorization: `Bearer ${publicAnonKey}`,
-          },
-        }
-      )
-        .then((res) => res.json())
-        .then((data) => setDbInfo(data))
-        .catch((err) => console.error('Failed to reload DB info:', err));
     } catch (error) {
       console.error('Sync error:', error);
+      setSyncing(false);
       toast.error(
         error instanceof Error ? error.message : 'Failed to sync products',
         { id: 'sync' }
