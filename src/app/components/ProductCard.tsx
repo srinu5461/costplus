@@ -177,6 +177,8 @@ export const ProductCard = memo(function ProductCard({ product, sectionTag, prio
   const productRating = product?.rating || 0;
   const productBrand = product?.brand || '';
   const productInStock = product?.inStock ?? true;
+  const backOrderAvailable = product?.backOrderAvailable || false;
+  const uropaPromisedDate = product?.uropaPromisedDate || '';
   const productBrandLogo = product?.brandLogo || product?.brandLogoUrl;
   const productCode = product?.code || product?.sku || '';
   const hasMultibuy = product?.multiBuyOptions && product.multiBuyOptions.length > 0;
@@ -293,9 +295,14 @@ export const ProductCard = memo(function ProductCard({ product, sectionTag, prio
             </Badge>
           )}
           
-          {!productInStock && (
+          {!productInStock && !backOrderAvailable && (
             <Badge variant="secondary" className="absolute top-2 right-2 bg-red-100 text-red-800 font-semibold shadow-md text-xs">
               Out of Stock
+            </Badge>
+          )}
+          {!productInStock && backOrderAvailable && (
+            <Badge variant="secondary" className="absolute top-2 right-2 bg-amber-100 text-amber-800 font-semibold shadow-md text-xs">
+              Backorder
             </Badge>
           )}
           {productInStock && (
@@ -518,6 +525,11 @@ export const ProductCard = memo(function ProductCard({ product, sectionTag, prio
               <>
                 <ShoppingCart className="size-4 mr-2" />
                 Add to Cart
+              </>
+            ) : backOrderAvailable ? (
+              <>
+                <ShoppingCart className="size-4 mr-2" />
+                Backorder
               </>
             ) : (
               'Out of Stock'

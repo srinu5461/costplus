@@ -63,6 +63,8 @@ export interface Product {
   inStock: boolean;
   stockStatus?: string;
   stockQuantity?: number;
+  backOrderAvailable?: boolean;
+  uropaPromisedDate?: string;
   
   // Age restriction
   ageRestricted?: boolean; // true = requires age verification (18+)

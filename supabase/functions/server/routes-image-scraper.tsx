@@ -216,7 +216,7 @@ app.post('/export-uropa', async (c) => {
     let existingJob = await kv.get(`uropa-export:job:${jobId}`);
     const existingData = existingJob?.data || [];
 
-    const csvData: Array<{code: string, brand: string, brandLogo: string, tradePrice: number, error?: string}> = [...existingData];
+    const csvData: Array<{code: string, brand: string, brandLogo: string, tradePrice: number, inStock?: boolean, backOrderAvailable?: boolean, uropaPromisedDate?: string, error?: string}> = [...existingData];
     let successCount = existingJob?.success || 0;
     let errorCount = existingJob?.errors || 0;
 
@@ -296,9 +296,34 @@ app.post('/export-uropa', async (c) => {
             priceSource = 'costPrice';
           }
 
-          console.log(`[Export Uropa] ${code}: Brand=${brandName}, Price=$${tradePrice} (from ${priceSource})`);
+          // Extract stock fields
+          const uropaStockStatus = actualProduct?.stock?.stockLevelStatus || actualProduct?.stockLevelStatus;
+          const uropaInStock = uropaStockStatus === 'inStock';
+          const uropaBackOrderAvailable = actualProduct?.stock?.backorderAvailable || actualProduct?.backorderAvailable || false;
+          const uropaAvailabilityMessage = actualProduct?.availabilityMessage?.message || null;
+          const uropaPromisedDate = actualProduct?.availabilityMessage?.promisedDate ||
+            (uropaAvailabilityMessage?.match(/\d{2}\/\d{2}\/\d{2,4}/)?.[0]) || null;
 
-          csvData.push({ code, brand: brandName, brandLogo: brandLogo, tradePrice });
+          console.log(`[Export Uropa] ${code}: Brand=${brandName}, Price=$${tradePrice} (from ${priceSource}), inStock=${uropaInStock}, backOrder=${uropaBackOrderAvailable}, promisedDate=${uropaPromisedDate}`);
+
+          csvData.push({ code, brand: brandName, brandLogo: brandLogo, tradePrice, inStock: uropaInStock, backOrderAvailable: uropaBackOrderAvailable, uropaPromisedDate: uropaPromisedDate || '' });
+
+          // Save stock fields to KV so frontend can display them
+          const allKvProducts = await kv.getByPrefix('products:');
+          const existingKvProduct = allKvProducts.find((p: any) =>
+            p.code === code || p.productCode === code || p.sku === code
+          );
+          if (existingKvProduct) {
+            const kvKey = `products:${existingKvProduct.code || existingKvProduct.productCode || existingKvProduct.sku}`;
+            await kv.set(kvKey, {
+              ...existingKvProduct,
+              inStock: uropaInStock,
+              backOrderAvailable: uropaBackOrderAvailable,
+              uropaPromisedDate: uropaPromisedDate || '',
+              tradePrice: tradePrice,
+              brandLogo: brandLogo || existingKvProduct.brandLogo,
+            });
+          }
           successCount++;
 
         } catch (error) {
