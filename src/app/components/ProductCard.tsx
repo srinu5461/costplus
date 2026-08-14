@@ -300,7 +300,7 @@ export const ProductCard = memo(function ProductCard({ product, sectionTag, prio
               Out of Stock
             </Badge>
           )}
-          {backOrderAvailable && (
+          {!productInStock && backOrderAvailable && (
             <Badge variant="secondary" className="absolute top-2 right-2 bg-amber-100 text-amber-800 font-semibold shadow-md text-xs">
               Backorder
             </Badge>

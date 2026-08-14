@@ -1215,7 +1215,7 @@ export function ProductDetail() {
                 <span className="text-sm font-semibold text-green-600">In Stock</span>
               </div>
             )}
-            {backOrderAvailable && (
+            {!productInStock && backOrderAvailable && (
               <div className="flex flex-col gap-1 py-2 px-3 bg-amber-50 border border-amber-200 rounded">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="size-5 text-amber-600" />
