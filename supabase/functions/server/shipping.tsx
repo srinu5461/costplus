@@ -166,92 +166,92 @@ const REGIONAL_ZONES: Record<string, any> = {
 const SHIPPING_RATES: Record<string, any> = {
   SYDNEY_METRO: [
     { maxAmount: 300, cost: 30 },
-    { maxAmount: Infinity, cost: 0 } // Free over $300
+    { maxAmount: Infinity, cost: 30 }
   ],
   MELBOURNE_METRO: [
     { maxAmount: 300, cost: 30 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
   BRISBANE_METRO: [
     { maxAmount: 300, cost: 30 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
-  
+
   NSW_REGIONAL_TOWN: [
     { maxAmount: 300, cost: 30 },
-    { maxAmount: 700, cost: 0 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: 700, cost: 30 },
+    { maxAmount: Infinity, cost: 30 }
   ],
   NSW_REGIONAL_AREA: [
     { maxAmount: 300, cost: 60 },
     { maxAmount: 700, cost: 30 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
-  
+
   QLD_REGIONAL_TOWN: [
     { maxAmount: 300, cost: 60 },
     { maxAmount: 700, cost: 30 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
   QLD_REGIONAL_AREA: [
     { maxAmount: 300, cost: 120 },
     { maxAmount: 700, cost: 90 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
-  
+
   VIC_REGIONAL_TOWN: [
     { maxAmount: 300, cost: 40 },
     { maxAmount: 700, cost: 10 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
   VIC_REGIONAL_AREA: [
     { maxAmount: 300, cost: 60 },
     { maxAmount: 700, cost: 30 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
-  
+
   SA_REGIONAL_TOWN: [
     { maxAmount: 300, cost: 40 },
     { maxAmount: 700, cost: 10 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
   SA_REGIONAL_AREA: [
     { maxAmount: 300, cost: 60 },
     { maxAmount: 700, cost: 30 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
-  
+
   NT_DARWIN: [
     { maxAmount: 300, cost: 150 },
     { maxAmount: 700, cost: 120 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
   NT_REGIONAL: [
     { maxAmount: 300, cost: 170 },
     { maxAmount: 700, cost: 140 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
-  
+
   WA_PERTH: [
     { maxAmount: 300, cost: 100 },
     { maxAmount: 700, cost: 70 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
   WA_REGIONAL: [
     { maxAmount: 300, cost: 120 },
     { maxAmount: 700, cost: 90 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
-  
+
   TAS_HOBART_LAUNCESTON: [
     { maxAmount: 300, cost: 60 },
     { maxAmount: 700, cost: 30 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ],
   TAS_REGIONAL: [
     { maxAmount: 300, cost: 80 },
     { maxAmount: 700, cost: 50 },
-    { maxAmount: Infinity, cost: 0 }
+    { maxAmount: Infinity, cost: 30 }
   ]
 };
 
@@ -396,8 +396,6 @@ export function calculateShipping(
     zone: zoneInfo.zone,
     zoneName: zoneInfo.zoneName,
     deliveryDays: zoneInfo.deliveryDays,
-    message: shippingCost === 0 
-      ? `Free shipping to ${zoneInfo.zoneName} (${zoneInfo.deliveryDays})` 
-      : `Shipping to ${zoneInfo.zoneName}: $${shippingCost.toFixed(2)} (${zoneInfo.deliveryDays})`
+    message: `Shipping to ${zoneInfo.zoneName}: $${shippingCost.toFixed(2)} (${zoneInfo.deliveryDays})`
   };
 }
