@@ -86,7 +86,7 @@ export function DeliveryInformation() {
                   <th style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; text-align: left; font-size: 0.875rem; font-weight: 600;">Location</th>
                   <th style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; text-align: left; font-size: 0.875rem; font-weight: 600;">Delivery Times</th>
                   <th style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; text-align: left; font-size: 0.875rem; font-weight: 600;">Under $300</th>
-                  <th style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; text-align: left; font-size: 0.875rem; font-weight: 600;">Over $300+ (small items only)</th>
+                  <th style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; text-align: left; font-size: 0.875rem; font-weight: 600;">Over $300</th>
                 </tr>
               </thead>
               <tbody>
@@ -94,19 +94,19 @@ export function DeliveryInformation() {
                   <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: 600;">SYDNEY METRO</td>
                   <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: 600;">1-2 days</td>
                   <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$30</td>
-                  <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold; color: #15803d;">FREE</td>
+                  <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$30</td>
                 </tr>
                 <tr style="background-color: #fecaca;">
                   <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: 600;">MELBOURNE METRO</td>
                   <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: 600;">1-2 days</td>
                   <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$30</td>
-                  <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold; color: #15803d;">FREE</td>
+                  <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$30</td>
                 </tr>
                 <tr style="background-color: #ccfbf1;">
                   <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: 600;">BRISBANE METRO</td>
                   <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: 600;">1-2 days</td>
                   <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$30</td>
-                  <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold; color: #15803d;">FREE</td>
+                  <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$30</td>
                 </tr>
               </tbody>
             </table>
@@ -148,15 +148,15 @@ export function DeliveryInformation() {
                 <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: 600;">Regional Towns</td>
                 <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem;">Next Day - 2 Days</td>
                 <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$30</td>
-                <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold; color: #15803d;">FREE</td>
-                <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold; color: #15803d;">FREE</td>
+                <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$30</td>
+                <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$30</td>
               </tr>
               <tr style="background-color: #fefce8;">
                 <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: 600;">Regional Areas</td>
                 <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem;">Next Day - 5 Days</td>
                 <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$60</td>
                 <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$30</td>
-                <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold; color: #15803d;">FREE</td>
+                <td style="border: 1px solid #cbd5e1; padding: 0.75rem 1rem; font-weight: bold;">$30</td>
               </tr>
             </tbody>
           </table>
