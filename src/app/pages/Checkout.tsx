@@ -2250,8 +2250,8 @@ export function Checkout() {
 
                     <Separator />
 
-                    {/* Pickup Option */}
-                    <div className="space-y-4">
+                    {/* Pickup Option - disabled */}
+                    {false && <div className="space-y-4">
                       <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                         <input
                           type="checkbox"
@@ -2360,7 +2360,7 @@ export function Checkout() {
                           </div>
                         </div>
                       )}
-                    </div>
+                    </div>}
 
                     <Separator />
 
