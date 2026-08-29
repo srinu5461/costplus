@@ -28,6 +28,7 @@ import orders from './orders.tsx';
 import pickupLocations from './pickup-locations.tsx';
 import menuBrands from './menu-brands.tsx';
 import syncProducts from './sync-products.tsx';
+import importSimco from './routes-import-simco.tsx';
 import { registerSitemapRoute } from './sitemap.tsx';
 
 const app = new Hono();
@@ -3486,6 +3487,7 @@ registerSitemapRoute(app, kv);
 app.route('/make-server-d1fbc049/ai', ai);
 app.route('/make-server-d1fbc049/legal', legal);
 app.route('/make-server-d1fbc049/cms', cms);
+app.route('/make-server-d1fbc049/import-simco', importSimco);
 
 // Legacy CMS routes for About page (kept for backwards compatibility)
 app.get('/make-server-d1fbc049/cms/about', async (c) => {
