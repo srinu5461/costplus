@@ -1869,9 +1869,18 @@ app.post("/make-server-d1fbc049/categories/import-bulk", async (c) => {
     }
     
     console.log(`Importing ${categoryNodes.length} hierarchical categories...`);
-    
+
+    // Preserve any Simco nodes
+    const existingTreeImport = await kv.get('category_tree').catch(() => []) as any[] || [];
+    const simcoImportNodes = existingTreeImport.filter((n: any) =>
+      String(n.id).startsWith('SC-') || n.id === 'G-SIMCO'
+    );
+    const incomingImportIds = new Set(categoryNodes.map((n: any) => n.id));
+    const simcoToAddImport = simcoImportNodes.filter((n: any) => !incomingImportIds.has(n.id));
+    const mergedImport = [...categoryNodes, ...simcoToAddImport];
+
     // Store the full category tree structure
-    await kv.set('category_tree', categoryNodes);
+    await kv.set('category_tree', mergedImport);
     
     // Also create a flat list for backwards compatibility
     const flatCategories = ['All Equipment'];
@@ -1956,13 +1965,22 @@ app.put("/make-server-d1fbc049/categories/tree", async (c) => {
     }
     
     console.log(`Received ${categoryTree.length} category nodes, saving to KV store...`);
-    
+
+    // Preserve any Simco nodes that were added externally
+    const existingTree = await kv.get('category_tree').catch(() => []) as any[] || [];
+    const simcoNodes = existingTree.filter((n: any) =>
+      String(n.id).startsWith('SC-') || n.id === 'G-SIMCO'
+    );
+    const incomingIds = new Set(categoryTree.map((n: any) => n.id));
+    const simcoToAdd = simcoNodes.filter((n: any) => !incomingIds.has(n.id));
+    const mergedTree = [...categoryTree, ...simcoToAdd];
+
     // Update the category tree
-    await kv.set('category_tree', categoryTree);
-    
-    console.log('Category tree saved successfully!');
-    
-    return c.json({ success: true, count: categoryTree.length });
+    await kv.set('category_tree', mergedTree);
+
+    console.log(`Category tree saved: ${categoryTree.length} nodes + ${simcoToAdd.length} Simco nodes preserved`);
+
+    return c.json({ success: true, count: mergedTree.length });
   } catch (error) {
     console.error('=== UPDATE CATEGORY TREE ERROR ===');
     console.error('Error type:', error?.constructor?.name);
