@@ -11,35 +11,52 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
 
 async function main() {
   let offset = 0;
-  const BATCH = 500;
+  const BATCH = 100;
   let fixed = 0;
 
   while (true) {
+    // Match keys like "products:simco-WHF200L"
     const { data, error } = await supabase
       .from('kv_store_577b3f26')
       .select('key, value')
-      .like('key', 'products:%')
-      .eq('value->>importSource', 'simco')
+      .like('key', 'products:simco-%')
       .range(offset, offset + BATCH - 1);
 
     if (error) { console.error(error.message); break; }
     if (!data || data.length === 0) break;
 
-    const upserts = data.map(row => ({
-      key: row.key,
-      value: { ...row.value, id: row.value.sku || row.value.code }
-    }));
+    console.log(`  Batch of ${data.length}, sample key: ${data[0].key}`);
 
+    const upserts = [];
+    const deletes = [];
+
+    for (const row of data) {
+      const oldKey = row.key; // e.g. "products:simco-WHF200L"
+      const sku = oldKey.replace('products:simco-', ''); // "WHF200L"
+      const newKey = `products:${sku}`;
+      const newValue = { ...row.value, id: sku };
+
+      upserts.push({ key: newKey, value: newValue });
+      deletes.push(oldKey);
+    }
+
+    // Insert under new key
     const { error: upErr } = await supabase
       .from('kv_store_577b3f26')
       .upsert(upserts, { onConflict: 'key' });
+    if (upErr) { console.error('Upsert error:', upErr.message); break; }
 
-    if (upErr) { console.error(upErr.message); break; }
+    // Delete old keys
+    const { error: delErr } = await supabase
+      .from('kv_store_577b3f26')
+      .delete()
+      .in('key', deletes);
+    if (delErr) { console.error('Delete error:', delErr.message); break; }
 
     fixed += upserts.length;
-    offset += BATCH;
     process.stdout.write(`\r  Fixed ${fixed} products...`);
     if (data.length < BATCH) break;
+    offset += BATCH;
   }
 
   console.log(`\n✓ Done! Fixed ${fixed} product IDs. Now run a CDN sync.`);
