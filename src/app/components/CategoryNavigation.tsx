@@ -335,7 +335,11 @@ export function CategoryNavigation() {
               to={brand.path || `/brands/${brand.slug}?sort=priceHigh`}
               className="flex items-center gap-2.5 px-5 py-2 h-[52px] hover:bg-[#2D3748] transition-colors border-r-2 border-slate-600"
             >
-              <span className="font-medium text-sm tracking-wide">{brand.name}</span>
+              {brand.logoUrl ? (
+                <img src={brand.logoUrl} alt={brand.name} className="h-7 w-auto object-contain max-w-[80px]" />
+              ) : (
+                <span className="font-medium text-sm tracking-wide">{brand.name}</span>
+              )}
             </Link>
           ))}
         </div>
