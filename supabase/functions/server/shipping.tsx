@@ -5,7 +5,15 @@ const QUOTE_REQUIRED_CATEGORIES = [
   'Refrigeration',
   'Ice Machines',
   'Commercial Kitchen Machines',
-  'Furniture'
+  'Furniture',
+  'Simco Equipment'
+];
+
+// Simco subcategories that do NOT require a quote (small/light items)
+const SIMCO_NO_QUOTE_SUBCATEGORIES = [
+  'Spare Parts',
+  'Fridge Parts',
+  'GN Pans',
 ];
 
 // Postcode ranges for metro areas
@@ -301,9 +309,15 @@ export function requiresShippingQuote(categories: string[]): { required: boolean
   const matchedCategories: string[] = [];
   
   for (const category of categories) {
+    // Skip Simco subcategories that are light/small and don't need a quote
+    const isSimcoNoQuote = SIMCO_NO_QUOTE_SUBCATEGORIES.some(sub =>
+      category.toLowerCase().includes(sub.toLowerCase())
+    );
+    if (isSimcoNoQuote) continue;
+
     // Check if category contains any of the quote-required keywords
     for (const quoteCategory of QUOTE_REQUIRED_CATEGORIES) {
-      if (category.toLowerCase().includes(quoteCategory.toLowerCase()) || 
+      if (category.toLowerCase().includes(quoteCategory.toLowerCase()) ||
           quoteCategory.toLowerCase().includes(category.toLowerCase())) {
         matchedCategories.push(category);
         break;
