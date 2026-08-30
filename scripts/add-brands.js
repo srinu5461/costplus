@@ -17,8 +17,8 @@ const BRANDS = [
     name: 'Atosa',
     slug: 'atosa',
     logoUrl: 'https://simcogroup.com.au/pub/media/wysiwyg/gas_anim.png',
-    isActive: true,
-    order: 1,
+    sortOrder: 10,
+    enabled: true,
     createdAt: NOW,
     updatedAt: NOW,
   },
@@ -27,8 +27,8 @@ const BRANDS = [
     name: 'Cookrite',
     slug: 'cookrite',
     logoUrl: 'https://simcogroup.com.au/pub/media/wysiwyg/gefegerator_anim.png',
-    isActive: true,
-    order: 2,
+    sortOrder: 11,
+    enabled: true,
     createdAt: NOW,
     updatedAt: NOW,
   },
@@ -43,28 +43,23 @@ async function main() {
     .single();
 
   const existingList = Array.isArray(listData?.value) ? listData.value : [];
-  console.log(`Existing brands: ${existingList.length}`);
+  console.log(`Existing brands: ${existingList.length}`, existingList);
 
-  const upserts = [];
-  const newIds = [];
+  const upserts = BRANDS.map(brand => ({ key: `menu-brand:${brand.id}`, value: brand }));
 
-  for (const brand of BRANDS) {
-    upserts.push({ key: `menu-brand:${brand.id}`, value: brand });
-    if (!existingList.includes(brand.id)) newIds.push(brand.id);
-  }
-
-  // Upsert brand records
   const { error } = await supabase.from('kv_store_577b3f26').upsert(upserts, { onConflict: 'key' });
   if (error) { console.error('Upsert error:', error.message); process.exit(1); }
 
-  // Update brand list
-  const updatedList = [...existingList.filter(id => !newIds.includes(id)), ...BRANDS.map(b => b.id)];
+  // Add to list if not already there
+  const newIds = BRANDS.map(b => b.id).filter(id => !existingList.includes(id));
+  const updatedList = [...existingList, ...newIds];
+
   const { error: listErr } = await supabase.from('kv_store_577b3f26')
     .upsert({ key: 'menu-brands:list', value: updatedList }, { onConflict: 'key' });
   if (listErr) { console.error('List update error:', listErr.message); process.exit(1); }
 
   console.log('✓ Added Atosa and Cookrite brand logos.');
-  console.log('Refresh the site to see them in the menu brands section.');
+  console.log('Updated list:', updatedList);
 }
 
 main().catch(err => { console.error(err); process.exit(1); });

@@ -469,8 +469,8 @@ export const ProductCard = memo(function ProductCard({ product, sectionTag, prio
                     <span className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">Ex GST</span>
                   </div>
                 </div>
-              ) : isPromotion && oldWasPrice ? (
-                // Promotional pricing with old price strikethrough (backwards compatibility)
+              ) : oldWasPrice ? (
+                // wasPrice strikethrough pricing
                 <div className="flex flex-col items-center gap-1">
                   <div className="flex items-center gap-2 flex-wrap justify-center">
                     <span className="text-sm sm:text-base font-semibold text-slate-400 line-through whitespace-nowrap">

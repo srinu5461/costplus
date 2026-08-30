@@ -1190,8 +1190,16 @@ export function ProductDetail() {
                   </div>
                 </div>
               ) : (
-                // NORMAL CUSTOMER: Show regular price
+                // NORMAL CUSTOMER: Show regular price (with wasPrice strikethrough if available)
                 <div>
+                  {displayProduct.wasPrice && parseFloat(String(displayProduct.wasPrice)) > displayPrice && (
+                    <div className="flex items-baseline gap-3 mb-1">
+                      <span className="text-2xl font-bold text-slate-400 line-through">${parseFloat(String(displayProduct.wasPrice)).toFixed(2)}</span>
+                      <Badge className="bg-[#E31837] hover:bg-[#E31837] font-bold">
+                        SAVE ${(parseFloat(String(displayProduct.wasPrice)) - displayPrice).toFixed(2)}
+                      </Badge>
+                    </div>
+                  )}
                   <div className="flex items-baseline gap-3 mb-1">
                     <span className="text-4xl font-bold text-[#E31837]">${displayPrice.toFixed(2)}</span>
                     <span className="text-sm text-slate-600">ex GST</span>
