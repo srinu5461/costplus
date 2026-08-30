@@ -111,7 +111,7 @@ app.post('/', async (c) => {
     const dimensionsStr = [specs['Width'], specs['Depth'], specs['Height'] || specs['Height ']].filter(Boolean).join(' x ');
 
     const product = {
-      id: `simco-${sku}`,
+      id: sku,
       code: sku,
       sku,
       name,
