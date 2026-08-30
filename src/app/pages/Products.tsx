@@ -312,16 +312,24 @@ export function Products() {
         for (let i = productCategoryIds.length - 1; i >= 0; i--) {
           const categoryId = productCategoryIds[i];
           const productFullPath = categoryIdToPath.get(categoryId);
-          
+
           if (productFullPath) {
             // Exact match
             if (productFullPath === selectedCategory) return true;
-            
+
             // If selecting a parent category, include all subcategories
             if (productFullPath.startsWith(selectedCategory + ' > ')) return true;
           }
         }
-        
+
+        // Fallback: use wholePath directly (for Simco/imported products)
+        const wholePath = (p as any).wholePath || '';
+        if (wholePath) {
+          if (wholePath === selectedCategory) return true;
+          if (wholePath.startsWith(selectedCategory + ' > ')) return true;
+          if (selectedCategory.startsWith(wholePath)) return true;
+        }
+
         return false;
       });
       
