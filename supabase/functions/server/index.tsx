@@ -28,7 +28,7 @@ import orders from './orders.tsx';
 import pickupLocations from './pickup-locations.tsx';
 import menuBrands from './menu-brands.tsx';
 import syncProducts from './sync-products.tsx';
-import importSimco from './routes-import-simco.tsx';
+import importSimco from './routes-import-simco.ts';
 import { registerSitemapRoute } from './sitemap.tsx';
 
 const app = new Hono();
