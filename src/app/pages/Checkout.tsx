@@ -335,11 +335,11 @@ export function Checkout() {
   const bogoDiscount = bogoResult?.totalDiscount ?? 0;
   const subtotal = originalSubtotal - bogoDiscount;
   const gst = subtotal * 0.1; // 10% GST on products
-  const shippingGst = shipping * 0.1; // 10% GST on shipping
 
   // Use calculated shipping cost only if it has been calculated, otherwise 0
   // If pickup is selected, shipping is always 0
   const shipping = usePickup ? 0 : (shippingCalculated ? shippingCost : 0);
+  const shippingGst = shipping * 0.1; // 10% GST on shipping
   const voucherDiscount = appliedVoucher ? appliedVoucher.discountAmount : 0;
   const total = Math.max(0, subtotal + gst + shipping + shippingGst - voucherDiscount);
   
