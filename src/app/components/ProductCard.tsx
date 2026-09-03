@@ -177,7 +177,8 @@ export const ProductCard = memo(function ProductCard({ product, sectionTag, prio
   const productRating = product?.rating || 0;
   const productBrand = product?.brand || '';
   const uropaPromisedDate = product?.uropaPromisedDate || '';
-  const backOrderAvailable = product?.backOrderAvailable || false;
+  const uropaAvailabilityMessage = (product as any)?.uropaAvailabilityMessage || '';
+  const backOrderAvailable = product?.backOrderAvailable || (product as any)?.uropaMessageEnum === 'AM_ON_BACKORDER' || false;
   const promisedDateInFuture = uropaPromisedDate ? new Date(uropaPromisedDate) > new Date() : false;
   const productInStock = promisedDateInFuture ? false : (product?.inStock ?? true);
   const productBrandLogo = product?.brandLogo || product?.brandLogoUrl;
@@ -302,9 +303,21 @@ export const ProductCard = memo(function ProductCard({ product, sectionTag, prio
             </Badge>
           )}
           {!productInStock && backOrderAvailable && (
-            <Badge variant="secondary" className="absolute top-2 right-2 bg-amber-100 text-amber-800 font-semibold shadow-md text-xs">
-              Backorder
-            </Badge>
+            <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
+              <Badge variant="secondary" className="bg-amber-100 text-amber-800 font-semibold shadow-md text-xs">
+                Backorder
+              </Badge>
+              {uropaPromisedDate && (
+                <span className="text-xs text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded shadow-sm">
+                  Expected: {new Date(uropaPromisedDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </span>
+              )}
+              {!uropaPromisedDate && uropaAvailabilityMessage && (
+                <span className="text-xs text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded shadow-sm max-w-[140px] text-right leading-tight">
+                  {uropaAvailabilityMessage}
+                </span>
+              )}
+            </div>
           )}
           {productInStock && (
             <div className="absolute bottom-2 left-2">
