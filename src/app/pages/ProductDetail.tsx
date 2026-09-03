@@ -1051,13 +1051,19 @@ export function ProductDetail() {
               )}
               
               {/* Brand Logo */}
-              {productBrandLogo && (
+              {productBrand && (
                 <div className="mb-3">
-                  <img 
-                    src={productBrandLogo} 
-                    alt={productBrand}
-                    className="h-8 object-contain"
-                  />
+                  {productBrandLogo ? (
+                    <img
+                      src={productBrandLogo}
+                      alt={productBrand}
+                      className="h-8 object-contain max-w-[120px]"
+                    />
+                  ) : (
+                    <span className="text-[11px] font-black text-[#0284C7] uppercase tracking-wider block">
+                      {productBrand}
+                    </span>
+                  )}
                 </div>
               )}
               
