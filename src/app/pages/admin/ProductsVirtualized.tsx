@@ -27,67 +27,55 @@ export function ProductsVirtualized() {
       .catch((err) => console.error('Failed to load DB info:', err));
   }, []);
 
-  const pollSyncStatus = async () => {
-    const interval = setInterval(async () => {
-      try {
-        const res = await fetch(
-          `https://${projectId}.supabase.co/functions/v1/make-server-d1fbc049/sync-products/status`,
-          { headers: { Authorization: `Bearer ${publicAnonKey}` } }
-        );
-        const data = await res.json();
-        const status = data?.status?.status;
+  const handleSync = async () => {
+    setSyncing(true);
+    toast.loading('Starting CDN sync...', { id: 'sync' });
 
-        if (status === 'completed') {
-          clearInterval(interval);
-          setSyncing(false);
+    try {
+      let offset = 0;
+      let chunkIndex = 0;
+      let totalSoFar = 0;
+      let uploadedChunks: string[] = [];
+      const startedAt = new Date().toISOString();
+
+      while (true) {
+        const response = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/make-server-d1fbc049/sync-products`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${publicAnonKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ offset, chunkIndex, totalSoFar, uploadedChunks, startedAt }),
+          }
+        );
+
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.error || 'Sync failed');
+        }
+
+        const data = await response.json();
+
+        if (data.done) {
           toast.success(
-            `Sync complete! ${data.status.totalCount?.toLocaleString()} products in ${data.status.chunks} chunks.`,
+            `Sync complete! ${data.totalCount?.toLocaleString()} products in ${data.chunks} chunks.`,
             { id: 'sync', duration: 5000 }
           );
           await queryClient.invalidateQueries({ queryKey: ['products-json'] });
           setRefreshKey(prev => prev + 1);
-        } else if (status === 'failed') {
-          clearInterval(interval);
-          setSyncing(false);
-          toast.error(`Sync failed: ${data.status.error}`, { id: 'sync' });
-        } else if (status === 'running') {
-          const count = data.status.totalCount || 0;
-          const chunks = data.status.chunksUploaded || 0;
-          toast.loading(`Syncing... ${count.toLocaleString()} products, ${chunks} chunks uploaded`, { id: 'sync' });
+          break;
         }
-      } catch (e) {
-        // ignore poll errors
+
+        offset = data.nextOffset;
+        chunkIndex = data.chunkIndex;
+        totalSoFar = data.totalSoFar;
+        uploadedChunks = data.uploadedChunks;
+        toast.loading(`Syncing... ${totalSoFar.toLocaleString()} products, ${uploadedChunks.length} chunks`, { id: 'sync' });
       }
-    }, 5000);
-  };
-
-  const handleSync = async () => {
-    setSyncing(true);
-    toast.loading('Starting CDN sync in background...', { id: 'sync' });
-
-    try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-d1fbc049/sync-products`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${publicAnonKey}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Sync failed');
-      }
-
-      toast.loading('Sync running in background — checking progress...', { id: 'sync' });
-      pollSyncStatus();
-
     } catch (error) {
       console.error('Sync error:', error);
-      setSyncing(false);
       toast.error(
         error instanceof Error ? error.message : 'Failed to sync products',
         { id: 'sync' }
