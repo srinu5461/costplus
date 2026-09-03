@@ -334,13 +334,14 @@ export function Checkout() {
 
   const bogoDiscount = bogoResult?.totalDiscount ?? 0;
   const subtotal = originalSubtotal - bogoDiscount;
-  const gst = subtotal * 0.1; // 10% GST
+  const gst = subtotal * 0.1; // 10% GST on products
+  const shippingGst = shipping * 0.1; // 10% GST on shipping
 
   // Use calculated shipping cost only if it has been calculated, otherwise 0
   // If pickup is selected, shipping is always 0
   const shipping = usePickup ? 0 : (shippingCalculated ? shippingCost : 0);
   const voucherDiscount = appliedVoucher ? appliedVoucher.discountAmount : 0;
-  const total = Math.max(0, subtotal + gst + shipping - voucherDiscount);
+  const total = Math.max(0, subtotal + gst + shipping + shippingGst - voucherDiscount);
   
   // Calculate shipping based on postcode and cart contents
   const calculateShippingCost = async () => {
@@ -3166,7 +3167,7 @@ export function Checkout() {
 
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">GST (10%)</span>
-                    <span className="font-medium">${gst.toFixed(2)}</span>
+                    <span className="font-medium">${(gst + shippingGst).toFixed(2)}</span>
                   </div>
                   {/* Show shipping when either calculated OR pickup is selected */}
                   {(shippingCalculated || usePickup) && (
