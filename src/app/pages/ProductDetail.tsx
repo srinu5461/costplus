@@ -840,10 +840,14 @@ export function ProductDetail() {
   const productDescription = displayProduct?.description;
   const productBrand = displayProduct?.brand;
   const uropaPromisedDate = displayProduct?.uropaPromisedDate || '';
-  const backOrderAvailable = displayProduct?.backOrderAvailable || false;
+  const uropaMessageEnum = (displayProduct as any)?.uropaMessageEnum || '';
+  const uropaAvailabilityMessage = (displayProduct as any)?.uropaAvailabilityMessage || '';
+  const isUropaBackorder = uropaMessageEnum === 'AM_ON_BACKORDER';
+  const backOrderAvailable = displayProduct?.backOrderAvailable || isUropaBackorder || false;
   // If promised date is in the future, treat as out of stock until it arrives
   const promisedDateInFuture = uropaPromisedDate ? new Date(uropaPromisedDate) > new Date() : false;
-  const productInStock = promisedDateInFuture ? false : (displayProduct?.inStock ?? true);
+  // Also treat Uropa backorder status as not in-stock for display purposes
+  const productInStock = (promisedDateInFuture || isUropaBackorder) ? false : (displayProduct?.inStock ?? true);
   const productRating = displayProduct?.rating || 4.7;
   const productBrandLogo = displayProduct?.brandLogo || displayProduct?.brandLogoUrl;
   const productCode = displayProduct?.code || displayProduct?.sku || '';
@@ -1234,6 +1238,9 @@ export function ProductDetail() {
                 {uropaPromisedDate && (
                   <span className="text-xs text-amber-600 ml-7">Expected: {new Date(uropaPromisedDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                 )}
+                {uropaAvailabilityMessage && !uropaPromisedDate && (
+                  <span className="text-xs text-amber-600 ml-7">{uropaAvailabilityMessage}</span>
+                )}
               </div>
             )}
             {!productInStock && !backOrderAvailable && (
@@ -1312,7 +1319,7 @@ export function ProductDetail() {
                   size="lg" 
                   className="flex-1 bg-[#E31837] hover:bg-[#E31837]/90 h-10 font-semibold"
                   onClick={handleAddToCart}
-                  disabled={!productInStock}
+                  disabled={!productInStock && !backOrderAvailable}
                 >
                   <ShoppingCart className="mr-2 size-4" />
                   Add to Cart
