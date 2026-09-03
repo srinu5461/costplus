@@ -60,7 +60,7 @@ export function ProductsVirtualized() {
 
         if (data.done) {
           toast.success(
-            `Sync complete! ${data.totalCount?.toLocaleString()} products in ${data.chunks} chunks.`,
+            `Sync complete! ${(data.totalCount || totalSoFar || 0).toLocaleString()} products in ${data.chunks ?? uploadedChunks.length} chunks.`,
             { id: 'sync', duration: 5000 }
           );
           await queryClient.invalidateQueries({ queryKey: ['products-json'] });
@@ -68,11 +68,11 @@ export function ProductsVirtualized() {
           break;
         }
 
-        offset = data.nextOffset;
-        chunkIndex = data.chunkIndex;
-        totalSoFar = data.totalSoFar;
-        uploadedChunks = data.uploadedChunks;
-        toast.loading(`Syncing... ${totalSoFar.toLocaleString()} products, ${uploadedChunks.length} chunks`, { id: 'sync' });
+        offset = data.nextOffset ?? offset;
+        chunkIndex = data.chunkIndex ?? chunkIndex;
+        totalSoFar = data.totalSoFar ?? totalSoFar;
+        uploadedChunks = data.uploadedChunks ?? uploadedChunks;
+        toast.loading(`Syncing... ${(totalSoFar || 0).toLocaleString()} products, ${uploadedChunks.length} chunks`, { id: 'sync' });
       }
     } catch (error) {
       console.error('Sync error:', error);
