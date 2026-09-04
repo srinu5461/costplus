@@ -84,6 +84,7 @@ for (let i = 1; i < lines.length; i++) {
     sku,
     name,
     brand: row.brand || 'Atosa',
+    brandLogoUrl: 'https://simcogroup.com.au/pub/media/wysiwyg/gas_anim.png',
     category: 'Combi Oven',
     categoryId: 'SC-COMBI',
     categoryLevel1: 'Simco Equipment',
