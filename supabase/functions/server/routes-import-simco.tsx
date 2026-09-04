@@ -76,7 +76,9 @@ app.post('/', async (c) => {
   const lines = csvText.split('\n').filter(l => l.trim());
   if (lines.length < 2) return c.json({ error: 'CSV has no data rows' }, 400);
 
-  const headers = parseCsvLine(lines[0]);
+  // Normalize headers to lowercase with underscores for consistent access
+  const rawHeaders = parseCsvLine(lines[0]);
+  const headers = rawHeaders.map(h => h.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, ''));
 
   let imported = 0;
   let skipped = 0;
@@ -101,14 +103,22 @@ app.post('/', async (c) => {
 
     const sku = row.sku || row.model || '';
     const name = row.name || '';
-    if (!name || !sku) { skipped++; continue; }
+    // Skip rows where SKU looks like a product name (data error in CSV)
+    if (!name || !sku || sku.length > 50) { skipped++; continue; }
 
     const price = parsePrice(row.price);
     if (!price) { skipped++; continue; }
 
-    const images = parseImages(row.all_images || row.image);
-    const specs = parseSpecs(row.specifications);
-    const dimensionsStr = [specs['Width'], specs['Depth'], specs['Height'] || specs['Height ']].filter(Boolean).join(' x ');
+    // CSV uses "Base Image URL" → base_image_url, "Addtional Image" → addtional_image
+    const images = parseImages(row.all_images || row.addtional_image || row.base_image_url || row.image);
+    const mainImage = row.base_image_url || images[0] || '';
+    const allImages = [mainImage, ...images.filter(img => img !== mainImage)].filter(Boolean);
+
+    const specs = parseSpecs(row.specifications || row.specification);
+    const dimensionsStr = [row.width, row.depth, row.height].filter(Boolean).join(' x ');
+
+    // Category: use "Attribute Set" column (attribute_set) as category if Category is empty
+    const category = row.category || row.attribute_set || 'Commercial Kitchen';
 
     const product = {
       id: sku,
@@ -116,28 +126,28 @@ app.post('/', async (c) => {
       sku,
       name,
       brand: row.brand || 'Simco',
-      category: row.category || 'Commercial Kitchen',
-      categoryLevel1: row.category || 'Commercial Kitchen',
+      category,
+      categoryLevel1: category,
       categoryLevel2: row.subcategory || '',
       price,
-      wasPrice: parsePrice(row.was_price) || undefined,
-      image: images[0] || row.image || '',
-      mainImageUrl: images[0] || row.image || '',
-      allImages: images,
-      galleryImages: images,
+      wasPrice: parsePrice(row.was_price || row.rap) || undefined,
+      image: mainImage,
+      mainImageUrl: mainImage,
+      allImages,
+      galleryImages: allImages,
       description: row.description || row.short_description || '',
       shortDescription: row.short_description || '',
       fullDescription: row.description || '',
-      specifications: row.specifications || '',
+      specifications: row.specifications || row.specification || '',
       features: row.features ? row.features.split('|').map((f: string) => f.trim()).filter(Boolean) : [],
       inStock: parseStock(row.in_stock),
       stockStatus: row.in_stock || '',
       storeAvailability: row.store_availability || '',
       dimensions: dimensionsStr || row.dimensions || '',
-      weight: specs['Weight'] || row.weight || '',
-      shippingCategory: specs['shipping_category'] || '',
-      productUrl: row.url || '',
-      url: row.url || '',
+      weight: row.weight || specs['Weight'] || '',
+      warranty: row.warranty || '',
+      productUrl: row.product_url || row.url || '',
+      url: row.product_url || row.url || '',
       importSource: 'simco',
       importedAt: new Date().toISOString(),
       status: true,
